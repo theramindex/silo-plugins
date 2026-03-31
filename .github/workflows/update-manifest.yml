@@ -1,0 +1,66 @@
+name: Update Manifest
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: 'Plugin to update (tmdb or tvdb)'
+        required: true
+        type: choice
+        options:
+          - tmdb
+          - tvdb
+      version:
+        description: 'Version tag (e.g., v1.0.0)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download checksums and update manifest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PLUGIN: ${{ inputs.plugin }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          REPO="ContinuumApp/continuum-plugin-${PLUGIN}"
+
+          # Download checksum files from the release
+          for platform in linux-amd64 linux-arm64 darwin-arm64; do
+            gh release download "${VERSION}" \
+              --repo "${REPO}" \
+              --pattern "plugin-${platform}.sha256" \
+              --dir checksums/ 2>/dev/null || true
+          done
+
+          # Read checksums and update manifest.json using jq
+          for platform_dash in linux-amd64 linux-arm64 darwin-arm64; do
+            platform_slash="${platform_dash/-//}"
+            checksum_file="checksums/plugin-${platform_dash}.sha256"
+            if [ -f "${checksum_file}" ]; then
+              checksum=$(awk '{print $1}' "${checksum_file}")
+              jq --arg plugin "continuum.${PLUGIN}" \
+                 --arg platform "${platform_slash}" \
+                 --arg checksum "${checksum}" \
+                 --arg version "${VERSION#v}" \
+                 '(.plugins[] | select(.manifest.plugin_id == $plugin)) |= (
+                    .manifest.version = $version |
+                    .binaries[$platform].checksum = $checksum |
+                    .binaries[$platform].url = "https://github.com/ContinuumApp/continuum-plugin-\($plugin | split(".") | last)/releases/download/\("v" + $version)/plugin-\($platform | gsub("/"; "-"))"
+                  )' manifest.json > manifest.tmp && mv manifest.tmp manifest.json
+            fi
+          done
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          git diff --cached --quiet || git commit -m "Update ${{ inputs.plugin }} to ${{ inputs.version }}"
+          git push
