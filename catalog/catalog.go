@@ -1,26 +1,16 @@
 package catalog
 
 import (
-	"encoding/json"
 	"fmt"
 	"sort"
 	"strings"
+
+	pluginv1 "github.com/Silo-Server/silo-plugin-sdk/pkg/pluginproto/silo/plugin/v1"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
-type SourceCapability struct {
-	Type        string `json:"type"`
-	ID          string `json:"id"`
-	DisplayName string `json:"display_name,omitempty"`
-	Description string `json:"description,omitempty"`
-}
-
-type SourceManifest struct {
-	PluginID            string             `json:"plugin_id"`
-	Version             string             `json:"version"`
-	ContinuumAPIVersion string             `json:"continuum_api_version"`
-	Capabilities        []SourceCapability `json:"capabilities"`
-	GlobalConfigSchema  []json.RawMessage  `json:"global_config_schema,omitempty"`
-}
+type SourceManifest = pluginv1.PluginManifest
 
 type Asset struct {
 	Name               string `json:"name"`
@@ -32,26 +22,13 @@ type Release struct {
 	Assets  []Asset `json:"assets"`
 }
 
-type CatalogCapability struct {
-	Type        string `json:"type"`
-	ID          string `json:"id"`
-	DisplayName string `json:"display_name,omitempty"`
-	Description string `json:"description,omitempty"`
-}
-
-type CatalogManifest struct {
-	PluginID            string              `json:"plugin_id"`
-	Version             string              `json:"version"`
-	ContinuumAPIVersion string              `json:"continuum_api_version"`
-	Capabilities        []CatalogCapability `json:"capabilities"`
-}
-
 type PlatformBinary struct {
-	URL string `json:"url"`
+	URL      string `json:"url"`
+	Checksum string `json:"checksum,omitempty"`
 }
 
 type CatalogPackage struct {
-	Manifest     CatalogManifest           `json:"manifest"`
+	Manifest     *pluginv1.PluginManifest  `json:"manifest"`
 	RepoURL      string                    `json:"repo_url,omitempty"`
 	ChecksumsURL string                    `json:"checksums_url,omitempty"`
 	Binaries     map[string]PlatformBinary `json:"binaries,omitempty"`
@@ -61,23 +38,31 @@ type RepositoryIndex struct {
 	Plugins []CatalogPackage `json:"plugins"`
 }
 
-func BuildPackageFromRelease(repo string, source SourceManifest, release Release) (CatalogPackage, error) {
-	if strings.TrimSpace(source.PluginID) == "" {
+func DecodeSourceManifest(data []byte) (*SourceManifest, error) {
+	var manifest pluginv1.PluginManifest
+	if err := (protojson.UnmarshalOptions{DiscardUnknown: true}).Unmarshal(data, &manifest); err != nil {
+		return nil, fmt.Errorf("decode source manifest: %w", err)
+	}
+	return &manifest, nil
+}
+
+func BuildPackageFromRelease(repo string, source *SourceManifest, release Release) (CatalogPackage, error) {
+	if source == nil {
+		return CatalogPackage{}, fmt.Errorf("source manifest is required")
+	}
+	if strings.TrimSpace(source.GetPluginId()) == "" {
 		return CatalogPackage{}, fmt.Errorf("source manifest plugin_id is required")
 	}
-	if strings.TrimSpace(source.ContinuumAPIVersion) == "" {
-		return CatalogPackage{}, fmt.Errorf("source manifest continuum_api_version is required")
+	if strings.TrimSpace(source.GetSiloApiVersion()) == "" {
+		return CatalogPackage{}, fmt.Errorf("source manifest silo_api_version is required")
 	}
-	if len(source.Capabilities) == 0 {
+	if len(source.GetCapabilities()) == 0 {
 		return CatalogPackage{}, fmt.Errorf("source manifest capabilities are required")
 	}
 
 	version := strings.TrimPrefix(strings.TrimSpace(release.TagName), "v")
 	if version == "" {
 		return CatalogPackage{}, fmt.Errorf("release tag_name is required")
-	}
-	if source.Version != version {
-		return CatalogPackage{}, fmt.Errorf("source manifest version %q does not match release tag %q", source.Version, release.TagName)
 	}
 
 	checksumsURL := ""
@@ -102,26 +87,18 @@ func BuildPackageFromRelease(repo string, source SourceManifest, release Release
 		return CatalogPackage{}, fmt.Errorf("release %q has no plugin binaries", release.TagName)
 	}
 
-	capabilities := make([]CatalogCapability, 0, len(source.Capabilities))
-	for _, capability := range source.Capabilities {
-		if strings.TrimSpace(capability.Type) == "" || strings.TrimSpace(capability.ID) == "" {
+	for _, capability := range source.GetCapabilities() {
+		if strings.TrimSpace(capability.GetType()) == "" || strings.TrimSpace(capability.GetId()) == "" {
 			return CatalogPackage{}, fmt.Errorf("source manifest capability type and id are required")
 		}
-		capabilities = append(capabilities, CatalogCapability{
-			Type:        capability.Type,
-			ID:          capability.ID,
-			DisplayName: capability.DisplayName,
-			Description: capability.Description,
-		})
 	}
 
+	manifest := proto.Clone(source).(*pluginv1.PluginManifest)
+	manifest.Version = version
+	manifest.Checksum = ""
+
 	return CatalogPackage{
-		Manifest: CatalogManifest{
-			PluginID:            source.PluginID,
-			Version:             source.Version,
-			ContinuumAPIVersion: source.ContinuumAPIVersion,
-			Capabilities:        capabilities,
-		},
+		Manifest:     manifest,
 		RepoURL:      "https://github.com/" + repo,
 		ChecksumsURL: checksumsURL,
 		Binaries:     binaries,
@@ -131,7 +108,7 @@ func BuildPackageFromRelease(repo string, source SourceManifest, release Release
 func UpsertPackage(index RepositoryIndex, pkg CatalogPackage) RepositoryIndex {
 	filtered := make([]CatalogPackage, 0, len(index.Plugins)+1)
 	for _, existing := range index.Plugins {
-		if existing.Manifest.PluginID == pkg.Manifest.PluginID {
+		if packagePluginID(existing) == packagePluginID(pkg) {
 			continue
 		}
 		filtered = append(filtered, existing)
@@ -139,16 +116,23 @@ func UpsertPackage(index RepositoryIndex, pkg CatalogPackage) RepositoryIndex {
 	filtered = append(filtered, pkg)
 
 	sort.Slice(filtered, func(i, j int) bool {
-		return filtered[i].Manifest.PluginID < filtered[j].Manifest.PluginID
+		return packagePluginID(filtered[i]) < packagePluginID(filtered[j])
 	})
 
 	index.Plugins = filtered
 	return index
 }
 
+func packagePluginID(pkg CatalogPackage) string {
+	if pkg.Manifest == nil {
+		return ""
+	}
+	return pkg.Manifest.GetPluginId()
+}
+
 func platformKeyFromAssetName(name string) (string, bool) {
 	parts := strings.Split(name, "-")
-	if len(parts) != 3 {
+	if len(parts) < 3 {
 		return "", false
 	}
 	if parts[0] != "plugin" || parts[1] == "" || parts[2] == "" {

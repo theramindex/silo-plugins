@@ -1,0 +1,50 @@
+{
+  "plugins": [
+    {
+      "manifest": {
+        "plugin_id": "silo.local-metadata",
+        "version": "0.1.0",
+        "checksum": "7dd23b96e87e2009adc8be3562cb6443161f723d6f1ad1b4d395468d625a07b1",
+        "silo_api_version": "v1",
+        "supported_platforms": [
+          {
+            "os": "linux",
+            "arch": "amd64"
+          }
+        ],
+        "capabilities": [
+          {
+            "type": "metadata_provider.v1",
+            "id": "local-metadata",
+            "display_name": "Local Metadata: NFO Sidecars",
+            "description": "Read-only same-basename NFO and local artwork metadata provider for Silo.",
+            "metadata": {
+              "default_priority": {
+                "movie": 1,
+                "series": 1,
+                "season": 1,
+                "episode": 1
+              }
+            }
+          }
+        ]
+      },
+      "repo_url": "https://github.com/theramindex/silo-local-metadata",
+      "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/checksums.txt",
+      "binaries": {
+        "darwin/arm64": {
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-darwin-arm64-silo-local-metadata",
+          "checksum": "4e51061d394623b0c05aa63ba33df8de5a232c9f4c9ca71384bf23b5595721a2"
+        },
+        "linux/amd64": {
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-linux-amd64-silo-local-metadata",
+          "checksum": "7dd23b96e87e2009adc8be3562cb6443161f723d6f1ad1b4d395468d625a07b1"
+        },
+        "linux/arm64": {
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-linux-arm64-silo-local-metadata",
+          "checksum": "9588c7324ec65fd143be9aad82de370472c0c20c18f8887b8430a886ebe65c76"
+        }
+      }
+    }
+  ]
+}
