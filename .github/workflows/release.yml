@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, without leading v. Defaults to the selected ref."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          version="${{ inputs.version }}"
+          if [ -z "$version" ]; then
+            version="${GITHUB_REF_NAME#v}"
+          fi
+          test -n "$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Download plugin assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          mkdir -p dist
+          gh release download "$TAG" \
+            --repo theramindex/silo-local-metadata \
+            --pattern "plugin-*" \
+            --dir dist/source
+
+          cp dist/source/plugin-darwin-arm64 dist/plugin-darwin-arm64-silo-local-metadata
+          cp dist/source/plugin-linux-amd64 dist/plugin-linux-amd64-silo-local-metadata
+          cp dist/source/plugin-linux-arm64 dist/plugin-linux-arm64-silo-local-metadata
+
+          cd dist
+          sha256sum plugin-* > checksums.txt
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || \
+            gh release create "$TAG" --title "$TAG" --notes "The RamIndex Silo plugins $TAG"
+          gh release upload "$TAG" dist/plugin-* dist/checksums.txt --clobber
