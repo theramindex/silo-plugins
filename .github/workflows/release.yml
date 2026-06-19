@@ -36,13 +36,13 @@ jobs:
         run: |
           mkdir -p dist
           gh release download "$TAG" \
-            --repo theramindex/silo-local-metadata \
+            --repo theramindex/silo-plugin-local-metadata \
             --pattern "plugin-*" \
             --dir dist/source
 
-          cp dist/source/plugin-darwin-arm64 dist/plugin-darwin-arm64-silo-local-metadata
-          cp dist/source/plugin-linux-amd64 dist/plugin-linux-amd64-silo-local-metadata
-          cp dist/source/plugin-linux-arm64 dist/plugin-linux-arm64-silo-local-metadata
+          cp dist/source/plugin-darwin-arm64 dist/plugin-darwin-arm64-silo-plugin-local-metadata
+          cp dist/source/plugin-linux-amd64 dist/plugin-linux-amd64-silo-plugin-local-metadata
+          cp dist/source/plugin-linux-arm64 dist/plugin-linux-arm64-silo-plugin-local-metadata
 
           cd dist
           sha256sum plugin-* > checksums.txt

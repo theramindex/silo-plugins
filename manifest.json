@@ -4,7 +4,7 @@
       "manifest": {
         "plugin_id": "silo.local-metadata",
         "version": "0.1.0",
-        "checksum": "4f7b984b13e7025caace3a57018621231c6e271319a042c296d554cffb2c76dc",
+        "checksum": "6ad32b40085fa1f8f18d0ba7ec5c8097c5705f62a6a38eddab7cab304271551d",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -29,20 +29,20 @@
           }
         ]
       },
-      "repo_url": "https://github.com/theramindex/silo-local-metadata",
+      "repo_url": "https://github.com/theramindex/silo-plugin-local-metadata",
       "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-darwin-arm64-silo-local-metadata",
-          "checksum": "bc607b3095b6e4ce0ab559cc010a9c1310b1748f913dfac2beb89ff9eeea1faa"
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-darwin-arm64-silo-plugin-local-metadata",
+          "checksum": "7facf9d236a97e864a0c6c0d58f5966c13649d5cfc1b8d65313c00d329ffd4ac"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-linux-amd64-silo-local-metadata",
-          "checksum": "4f7b984b13e7025caace3a57018621231c6e271319a042c296d554cffb2c76dc"
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-linux-amd64-silo-plugin-local-metadata",
+          "checksum": "6ad32b40085fa1f8f18d0ba7ec5c8097c5705f62a6a38eddab7cab304271551d"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-linux-arm64-silo-local-metadata",
-          "checksum": "27ed912e37fc5ae7d014ba5bebd0a7ff4c7f339f4bc7bb998bca28b2c3699fde"
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-linux-arm64-silo-plugin-local-metadata",
+          "checksum": "11ac3db99ec0de47746fcbc2e66edc460d80edee71919987f850c1cbe1fb1c24"
         }
       }
     }

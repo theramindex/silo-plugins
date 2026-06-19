@@ -25,18 +25,18 @@ func TestBuildPackageFromRelease_MinimalManifestAndAssets(t *testing.T) {
 	release := Release{
 		TagName: "v0.1.0",
 		Assets: []Asset{
-			{Name: "plugin-linux-amd64-silo-local-metadata", BrowserDownloadURL: "https://example.invalid/silo-local-metadata/plugin-linux-amd64-silo-local-metadata"},
-			{Name: "checksums.txt", BrowserDownloadURL: "https://example.invalid/silo-local-metadata/checksums.txt"},
-			{Name: "notes.txt", BrowserDownloadURL: "https://example.invalid/silo-local-metadata/notes.txt"},
+			{Name: "plugin-linux-amd64-silo-plugin-local-metadata", BrowserDownloadURL: "https://example.invalid/silo-plugin-local-metadata/plugin-linux-amd64-silo-plugin-local-metadata"},
+			{Name: "checksums.txt", BrowserDownloadURL: "https://example.invalid/silo-plugin-local-metadata/checksums.txt"},
+			{Name: "notes.txt", BrowserDownloadURL: "https://example.invalid/silo-plugin-local-metadata/notes.txt"},
 		},
 	}
 
-	pkg, err := BuildPackageFromRelease("theramindex/silo-local-metadata", source, release)
+	pkg, err := BuildPackageFromRelease("theramindex/silo-plugin-local-metadata", source, release)
 	if err != nil {
 		t.Fatalf("BuildPackageFromRelease() error = %v", err)
 	}
 
-	if pkg.RepoURL != "https://github.com/theramindex/silo-local-metadata" {
+	if pkg.RepoURL != "https://github.com/theramindex/silo-plugin-local-metadata" {
 		t.Fatalf("RepoURL = %q", pkg.RepoURL)
 	}
 	if pkg.Manifest.GetPluginId() != "silo.local-metadata" {
@@ -62,7 +62,7 @@ func TestBuildPackageFromRelease_RequiresSiloAPIVersion(t *testing.T) {
 	}
 	release := Release{TagName: "v0.1.0"}
 
-	_, err := BuildPackageFromRelease("theramindex/silo-local-metadata", source, release)
+	_, err := BuildPackageFromRelease("theramindex/silo-plugin-local-metadata", source, release)
 	if err == nil || !strings.Contains(err.Error(), "silo_api_version") {
 		t.Fatalf("expected silo_api_version error, got %v", err)
 	}
@@ -81,7 +81,7 @@ func TestUpsertPackage_ReplacesExistingPluginAndSorts(t *testing.T) {
 			PluginId: "silo.local-metadata",
 			Version:  "0.1.0",
 		},
-		RepoURL: "https://github.com/theramindex/silo-local-metadata",
+		RepoURL: "https://github.com/theramindex/silo-plugin-local-metadata",
 	}
 
 	index = UpsertPackage(index, updated)

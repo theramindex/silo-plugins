@@ -27,11 +27,11 @@ Each catalog entry includes enough data for list/install discovery:
       }
     ]
   },
-  "repo_url": "https://github.com/theramindex/silo-local-metadata",
+  "repo_url": "https://github.com/theramindex/silo-plugin-local-metadata",
   "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/checksums.txt",
   "binaries": {
     "linux/amd64": {
-      "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-linux-amd64-silo-local-metadata",
+      "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-linux-amd64-silo-plugin-local-metadata",
       "checksum": "<linux-amd64-binary-sha256>"
     }
   }
@@ -50,7 +50,7 @@ node scripts/validate-catalog.mjs
 ```
 
 5. Publish the release assets to `theramindex/silo-plugins`; the
-   `silo-local-metadata` release workflow can do this when the plugin
+   `silo-plugin-local-metadata` release workflow can do this when the plugin
    repository has a `CATALOG_PUSH_TOKEN` secret with write access to this
    catalog repository.
 6. Read back the published raw manifest and validate it.

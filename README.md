@@ -36,4 +36,4 @@ node scripts/validate-catalog.mjs
 5. Install the plugin you need.
 
 The current release assets are Darwin ARM64, Linux AMD64, and Linux ARM64
-binaries named `plugin-<os>-<arch>-silo-local-metadata`.
+binaries named `plugin-<os>-<arch>-silo-plugin-local-metadata`.
