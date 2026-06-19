@@ -12,6 +12,13 @@ const catalogDisplayNotes = new Map([
       description: "Read-only Jellyfin-compatible NFO and local artwork metadata provider for Silo.",
     },
   ],
+  [
+    "silo.dispatcharr",
+    {
+      displayName: "Dispatcharr Live TV",
+      description: "Dispatcharr-backed IPTV app with Live TV, guide, favorites, VOD catalog, and series catalog routes.",
+    },
+  ],
 ]);
 
 const index = JSON.parse(readFileSync(manifestPath, "utf8"));
