@@ -3,8 +3,8 @@
     {
       "manifest": {
         "plugin_id": "silo.local-metadata",
-        "version": "0.1.0",
-        "checksum": "3aa1b1ad6bd232460f5a284909504ef029c253247e22222ec0c776dbee3c2b90",
+        "version": "0.1.1",
+        "checksum": "c112fd925e61b877eeafe89ff559fecbbe2f47cad0daa336192bbfecef75158b",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -17,7 +17,7 @@
             "type": "metadata_provider.v1",
             "id": "local-metadata",
             "display_name": "Local Metadata: NFO Sidecars",
-            "description": "Read-only same-basename NFO and local artwork metadata provider for Silo.",
+            "description": "Read-only Jellyfin-compatible NFO and local artwork metadata provider for Silo.",
             "metadata": {
               "default_priority": {
                 "movie": 1,
@@ -30,19 +30,19 @@
         ]
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-local-metadata",
-      "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.1/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-darwin-arm64-silo-plugin-local-metadata",
-          "checksum": "1aea879f4715b92d3b0a8e16cc7a99e5c193ee03a48dc296d9791619d58ba0f8"
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.1/plugin-darwin-arm64-silo-plugin-local-metadata",
+          "checksum": "9a49e036596a58baf4cfce19730243219d5788eb9d3c983b8067ee7bd9b446e8"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-linux-amd64-silo-plugin-local-metadata",
-          "checksum": "3aa1b1ad6bd232460f5a284909504ef029c253247e22222ec0c776dbee3c2b90"
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.1/plugin-linux-amd64-silo-plugin-local-metadata",
+          "checksum": "c112fd925e61b877eeafe89ff559fecbbe2f47cad0daa336192bbfecef75158b"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.0/plugin-linux-arm64-silo-plugin-local-metadata",
-          "checksum": "68967d204180bd148f0c1a977512cdac2332870b3975d97b5b045195b2ae461d"
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.1/plugin-linux-arm64-silo-plugin-local-metadata",
+          "checksum": "26785b2f4d92d5a325433e05d1024364822ecf79dbf8ddbaaf885027ae506272"
         }
       }
     }

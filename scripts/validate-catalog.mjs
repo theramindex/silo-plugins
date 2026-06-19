@@ -9,7 +9,7 @@ const catalogDisplayNotes = new Map([
     "silo.local-metadata",
     {
       displayName: "Local Metadata: NFO Sidecars",
-      description: "Read-only same-basename NFO and local artwork metadata provider for Silo.",
+      description: "Read-only Jellyfin-compatible NFO and local artwork metadata provider for Silo.",
     },
   ],
 ]);

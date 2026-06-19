@@ -24,7 +24,7 @@ node scripts/validate-catalog.mjs
 
 ## Included Plugins
 
-- `silo.local-metadata` - read-only same-basename NFO and artwork sidecar
+- `silo.local-metadata` - read-only Jellyfin-compatible NFO and artwork sidecar
   metadata provider for Silo.
 
 ## Installing In Silo
