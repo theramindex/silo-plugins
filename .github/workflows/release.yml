@@ -30,34 +30,19 @@ jobs:
           echo "tag=v$version" >> "$GITHUB_OUTPUT"
 
       - name: Download plugin assets
+        env:
+          GH_TOKEN: ${{ secrets.SOURCE_RELEASE_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
         run: |
           mkdir -p dist
-          node <<'EOF'
-          const fs = require("fs");
-          const path = require("path");
+          gh release download "$TAG" \
+            --repo theramindex/silo-local-metadata \
+            --pattern "plugin-*" \
+            --dir dist/source
 
-          const tag = "${{ steps.version.outputs.tag }}";
-          const assets = [
-            ["plugin-darwin-arm64", "plugin-darwin-arm64-silo-local-metadata"],
-            ["plugin-linux-amd64", "plugin-linux-amd64-silo-local-metadata"],
-            ["plugin-linux-arm64", "plugin-linux-arm64-silo-local-metadata"],
-          ];
-
-          async function download(source, target) {
-            const url = `https://github.com/theramindex/silo-local-metadata/releases/download/${tag}/${source}`;
-            const response = await fetch(url);
-            if (!response.ok) {
-              throw new Error(`Failed to download ${source}: ${response.status} ${response.statusText}`);
-            }
-            const data = Buffer.from(await response.arrayBuffer());
-            fs.writeFileSync(path.join("dist", target), data);
-          }
-
-          Promise.all(assets.map(([source, target]) => download(source, target))).catch((error) => {
-            console.error(error);
-            process.exit(1);
-          });
-          EOF
+          cp dist/source/plugin-darwin-arm64 dist/plugin-darwin-arm64-silo-local-metadata
+          cp dist/source/plugin-linux-amd64 dist/plugin-linux-amd64-silo-local-metadata
+          cp dist/source/plugin-linux-arm64 dist/plugin-linux-arm64-silo-local-metadata
 
           cd dist
           sha256sum plugin-* > checksums.txt
