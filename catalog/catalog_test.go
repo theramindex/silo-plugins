@@ -9,7 +9,7 @@ import (
 
 func TestBuildPackageFromRelease_MinimalManifestAndAssets(t *testing.T) {
 	source := &pluginv1.PluginManifest{
-		PluginId:       "silo.local-metadata",
+		PluginId:       "silo.ramindex.local-metadata",
 		Version:        "0.1.0",
 		SiloApiVersion: "v1",
 		Capabilities: []*pluginv1.CapabilityDescriptor{
@@ -39,7 +39,7 @@ func TestBuildPackageFromRelease_MinimalManifestAndAssets(t *testing.T) {
 	if pkg.RepoURL != "https://github.com/theramindex/silo-plugin-local-metadata" {
 		t.Fatalf("RepoURL = %q", pkg.RepoURL)
 	}
-	if pkg.Manifest.GetPluginId() != "silo.local-metadata" {
+	if pkg.Manifest.GetPluginId() != "silo.ramindex.local-metadata" {
 		t.Fatalf("PluginID = %q", pkg.Manifest.GetPluginId())
 	}
 	if pkg.Manifest.GetVersion() != "0.1.0" {
@@ -55,7 +55,7 @@ func TestBuildPackageFromRelease_MinimalManifestAndAssets(t *testing.T) {
 
 func TestBuildPackageFromRelease_RequiresSiloAPIVersion(t *testing.T) {
 	source := &pluginv1.PluginManifest{
-		PluginId: "silo.local-metadata",
+		PluginId: "silo.ramindex.local-metadata",
 		Capabilities: []*pluginv1.CapabilityDescriptor{
 			{Type: "metadata_provider.v1", Id: "local-metadata"},
 		},
@@ -72,13 +72,13 @@ func TestUpsertPackage_ReplacesExistingPluginAndSorts(t *testing.T) {
 	index := RepositoryIndex{
 		Plugins: []CatalogPackage{
 			{Manifest: &pluginv1.PluginManifest{PluginId: "silo.tvdb", Version: "1.0.0"}},
-			{Manifest: &pluginv1.PluginManifest{PluginId: "silo.local-metadata", Version: "0.0.9"}},
+			{Manifest: &pluginv1.PluginManifest{PluginId: "silo.ramindex.local-metadata", Version: "0.0.9"}},
 		},
 	}
 
 	updated := CatalogPackage{
 		Manifest: &pluginv1.PluginManifest{
-			PluginId: "silo.local-metadata",
+			PluginId: "silo.ramindex.local-metadata",
 			Version:  "0.1.0",
 		},
 		RepoURL: "https://github.com/theramindex/silo-plugin-local-metadata",
@@ -89,7 +89,7 @@ func TestUpsertPackage_ReplacesExistingPluginAndSorts(t *testing.T) {
 	if len(index.Plugins) != 2 {
 		t.Fatalf("Plugins length = %d, want 2", len(index.Plugins))
 	}
-	if index.Plugins[0].Manifest.GetPluginId() != "silo.local-metadata" {
+	if index.Plugins[0].Manifest.GetPluginId() != "silo.ramindex.local-metadata" {
 		t.Fatalf("Plugins[0].PluginID = %q", index.Plugins[0].Manifest.GetPluginId())
 	}
 	if index.Plugins[0].Manifest.GetVersion() != "0.1.0" {
