@@ -3,8 +3,8 @@
     {
       "manifest": {
         "plugin_id": "silo.local-metadata",
-        "version": "0.1.7",
-        "checksum": "db94aface0c3a657d5c347c0ce58841fed132bd541f4c335531d8397e9d41d6c",
+        "version": "0.1.8",
+        "checksum": "c58774b0f1fe6c8359579f2144dda15f0300aa47dd63cabd981393d62349ec37",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -30,19 +30,19 @@
         ]
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-local-metadata",
-      "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.7/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.8/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.7/plugin-darwin-arm64-silo-plugin-local-metadata",
-          "checksum": "86f2a4b538108f5c593ec59f0f2f1d64f8305638579547741b94991eaf54aba7"
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.8/plugin-darwin-arm64-silo-plugin-local-metadata",
+          "checksum": "b0a4769fc97c9cce3528a0650650804cd0ce263a745525aa22ff340436daef6e"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.7/plugin-linux-amd64-silo-plugin-local-metadata",
-          "checksum": "db94aface0c3a657d5c347c0ce58841fed132bd541f4c335531d8397e9d41d6c"
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.8/plugin-linux-amd64-silo-plugin-local-metadata",
+          "checksum": "c58774b0f1fe6c8359579f2144dda15f0300aa47dd63cabd981393d62349ec37"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.7/plugin-linux-arm64-silo-plugin-local-metadata",
-          "checksum": "4d5b8a2f0fa63ade59c42cc3d52b79350231342fd737e565c84644e846632c7c"
+          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.8/plugin-linux-arm64-silo-plugin-local-metadata",
+          "checksum": "5ec2ff1c76712f5ac0f97743602d9172c43ffc79d199f3f18087e1dbf96bb681"
         }
       }
     },

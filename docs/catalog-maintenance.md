@@ -15,7 +15,7 @@ Each catalog entry includes enough data for list/install discovery:
 {
   "manifest": {
     "plugin_id": "silo.local-metadata",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "checksum": "<linux-amd64-binary-sha256>",
     "silo_api_version": "v1",
     "capabilities": [
@@ -28,10 +28,10 @@ Each catalog entry includes enough data for list/install discovery:
     ]
   },
   "repo_url": "https://github.com/theramindex/silo-plugin-local-metadata",
-  "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.7/checksums.txt",
+  "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.8/checksums.txt",
   "binaries": {
     "linux/amd64": {
-      "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.7/plugin-linux-amd64-silo-plugin-local-metadata",
+      "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.8/plugin-linux-amd64-silo-plugin-local-metadata",
       "checksum": "<linux-amd64-binary-sha256>"
     }
   }
