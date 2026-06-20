@@ -50,7 +50,7 @@
       "manifest": {
         "plugin_id": "silo.ramindex.dispatcharr",
         "version": "0.2.38",
-        "checksum": "3e5bbc5bb2286c039e818d39240fbf905af8bbc5ac157ca8d40de49955875fa8",
+        "checksum": "bb2d6a169e41a6daf3b31fef10e6edb56226c1458d26dcbcf32e60b9f4036332",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -87,15 +87,15 @@
       "binaries": {
         "darwin/arm64": {
           "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.38/dispatcharr-0.2.38-darwin-arm64",
-          "checksum": "87f5c5b894420ef0b93c546dc6ee0e25fd387d80dc364f0eecb9043be45545fb"
+          "checksum": "b6f6c19c8cec0c62d28a6ee7f85601f6b8c0ad70d8a775522a524da893ebf5de"
         },
         "linux/amd64": {
           "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.38/dispatcharr-0.2.38-linux-amd64",
-          "checksum": "3e5bbc5bb2286c039e818d39240fbf905af8bbc5ac157ca8d40de49955875fa8"
+          "checksum": "bb2d6a169e41a6daf3b31fef10e6edb56226c1458d26dcbcf32e60b9f4036332"
         },
         "linux/arm64": {
           "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.38/dispatcharr-0.2.38-linux-arm64",
-          "checksum": "c5018cd9e63a01129bd9cbfd3b76cbaaedf4c2239974185b9cc022724b47aed9"
+          "checksum": "c038cd7a9c52b5ce641801235940de8cf73a8e468a384f1079df407fe2e3fcc7"
         }
       }
     }
