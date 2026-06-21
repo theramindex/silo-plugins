@@ -19,6 +19,13 @@ const catalogDisplayNotes = new Map([
       description: "Dispatcharr-backed IPTV app with Live TV, guide, favorites, VOD catalog, and series catalog routes.",
     },
   ],
+  [
+    "silo.ramindex.app-links",
+    {
+      displayName: "App Links",
+      description: "Configurable external app launcher with fullscreen iframe shells and an admin app link manager.",
+    },
+  ],
 ]);
 
 const index = JSON.parse(readFileSync(manifestPath, "utf8"));

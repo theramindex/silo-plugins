@@ -4,3 +4,6 @@ cfed555aca166ac074dc891eb29b8a1c9aff82fc25ebcdb611e48c7c09a322b2  plugin-linux-a
 566ad8cf2a8cd43f44ef0f22c6a797a9542106aac8ab742cff0f63bffb0d5897  dispatcharr-0.2.54-darwin-arm64
 5556444ff9d5e5df010d9a1e8b59a7c2823698653fbb4f713884fa96a77b263f  dispatcharr-0.2.54-linux-amd64
 9137acbe7f231247eecd4c4c26effc096bb78038da6bbc3f8940a5d6bc23c22c  dispatcharr-0.2.54-linux-arm64
+7801e7ce3e8f630a8d9154682e712ebacbacce5e00b8e78bfc651182ac7c7122  app-links-0.1.0-darwin-arm64
+3d9832a1caeff357ad0dd1b433e6dadf20156fcdcee8bbc377251bb5671da2c8  app-links-0.1.0-linux-amd64
+064dbb50093daa8a912e05d3355e9a57e2f7eca9788939208b310ca802f44eb8  app-links-0.1.0-linux-arm64

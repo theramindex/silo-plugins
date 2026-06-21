@@ -26,6 +26,10 @@ node scripts/validate-catalog.mjs
 
 - `silo.ramindex.local-metadata` - read-only Jellyfin-compatible NFO and artwork sidecar
   metadata provider for Silo.
+- `silo.ramindex.dispatcharr` - Dispatcharr-backed Live TV app with guide, favorites,
+  VOD catalog, and series catalog routes.
+- `silo.ramindex.app-links` - configurable external app launcher with fullscreen iframe
+  shells and an admin app link manager.
 
 ## Installing In Silo
 
@@ -36,4 +40,4 @@ node scripts/validate-catalog.mjs
 5. Install the plugin you need.
 
 The current release assets are Darwin ARM64, Linux AMD64, and Linux ARM64
-binaries named `plugin-<os>-<arch>-silo-plugin-local-metadata`.
+binaries referenced from each plugin's versioned release.

@@ -98,6 +98,53 @@
           "checksum": "9137acbe7f231247eecd4c4c26effc096bb78038da6bbc3f8940a5d6bc23c22c"
         }
       }
+    },
+    {
+      "manifest": {
+        "plugin_id": "silo.ramindex.app-links",
+        "version": "0.1.0",
+        "checksum": "3d9832a1caeff357ad0dd1b433e6dadf20156fcdcee8bbc377251bb5671da2c8",
+        "silo_api_version": "v1",
+        "supported_platforms": [
+          {
+            "os": "darwin",
+            "arch": "arm64"
+          },
+          {
+            "os": "linux",
+            "arch": "amd64"
+          },
+          {
+            "os": "linux",
+            "arch": "arm64"
+          }
+        ],
+        "capabilities": [
+          {
+            "type": "http_routes.v1",
+            "id": "app-links-routes",
+            "display_name": "App Links",
+            "description": "Configurable external app launcher with fullscreen iframe shells and an admin app link manager."
+          }
+        ],
+        "category": "Apps"
+      },
+      "repo_url": "https://github.com/theramindex/silo-plugin-app-links",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.0/checksums.txt",
+      "binaries": {
+        "darwin/arm64": {
+          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.0/app-links-0.1.0-darwin-arm64",
+          "checksum": "7801e7ce3e8f630a8d9154682e712ebacbacce5e00b8e78bfc651182ac7c7122"
+        },
+        "linux/amd64": {
+          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.0/app-links-0.1.0-linux-amd64",
+          "checksum": "3d9832a1caeff357ad0dd1b433e6dadf20156fcdcee8bbc377251bb5671da2c8"
+        },
+        "linux/arm64": {
+          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.0/app-links-0.1.0-linux-arm64",
+          "checksum": "064dbb50093daa8a912e05d3355e9a57e2f7eca9788939208b310ca802f44eb8"
+        }
+      }
     }
   ]
 }
