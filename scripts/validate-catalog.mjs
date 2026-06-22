@@ -15,7 +15,7 @@ const catalogDisplayNotes = new Map([
   [
     "silo.ramindex.dispatcharr",
     {
-      displayName: "Live TV",
+      displayName: "Dispatcharr for Silo",
       description: "Dispatcharr-backed IPTV app with Live TV, guide, favorites, VOD catalog, and series catalog routes.",
     },
   ],
