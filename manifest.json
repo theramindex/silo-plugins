@@ -49,8 +49,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.dispatcharr",
-        "version": "0.2.84",
-        "checksum": "ea84325c3dc5a71115109ac5d3ec5a29f516935f7ef659504f30b872ba4ceed9",
+        "version": "0.2.86",
+        "checksum": "cbcf34df23da3b5a4746c1e05170971dedb4530eaa514663fbe46c226d9c58a3",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -74,18 +74,6 @@
             "description": "Dispatcharr-backed IPTV app with Live TV, guide, favorites, VOD catalog, and series catalog routes."
           },
           {
-            "type": "scheduled_task.v1",
-            "id": "dispatcharr-refresh-channels",
-            "display_name": "Refresh Live TV Channels",
-            "description": "Refreshes the Live TV channel list, categories, and stream URLs from Dispatcharr."
-          },
-          {
-            "type": "scheduled_task.v1",
-            "id": "dispatcharr-refresh-epg",
-            "display_name": "Refresh Live TV Guide",
-            "description": "Refreshes EPG and TV guide program data for the current channel lineup."
-          },
-          {
             "type": "http_routes.v1",
             "id": "dispatcharr-routes",
             "display_name": "Live TV App",
@@ -95,19 +83,19 @@
         "category": "Video/Live TV"
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-dispatcharr",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.84/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.86/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.84/dispatcharr-0.2.84-darwin-arm64",
-          "checksum": "0bb292afdada25d376ef9982c22171cf6b6865d28570bdd60859670821fbe870"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.86/dispatcharr-0.2.86-darwin-arm64",
+          "checksum": "9268707c97f494d07d494fa1ab37fcc189902f199573c5d77ae7975bf58ebf2d"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.84/dispatcharr-0.2.84-linux-amd64",
-          "checksum": "ea84325c3dc5a71115109ac5d3ec5a29f516935f7ef659504f30b872ba4ceed9"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.86/dispatcharr-0.2.86-linux-amd64",
+          "checksum": "cbcf34df23da3b5a4746c1e05170971dedb4530eaa514663fbe46c226d9c58a3"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.84/dispatcharr-0.2.84-linux-arm64",
-          "checksum": "098fb79f925ff32dc26e4efdc87939615ab6094e8a76da1e7875ac4bd530b98f"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.2.86/dispatcharr-0.2.86-linux-arm64",
+          "checksum": "7dd8844aba551b6b830eebc3dcc5b64cc0102b3c6cf5b6b4439f58474da7798e"
         }
       }
     },
