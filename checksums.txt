@@ -1,9 +1,9 @@
 80d6daca282d8d33e62fe25710be13aeb2e56144c2d813ecd758029f2859b896  plugin-darwin-arm64-silo-plugin-local-metadata
 714dc357ee5bc36c44e60191a78bd4fe9971732a83df7b576579ba6ea21df757  plugin-linux-amd64-silo-plugin-local-metadata
 cfed555aca166ac074dc891eb29b8a1c9aff82fc25ebcdb611e48c7c09a322b2  plugin-linux-arm64-silo-plugin-local-metadata
-cd66b33787e9ad201e7c11b6c9287faf4d3686a849794e248333094550aab788  dispatcharr-0.2.142-darwin-arm64
-ad2099a333d798a57d444e70bc585b7e8eb2c3472bbb9c06da4364eb9e2f2a00  dispatcharr-0.2.142-linux-amd64
-4431a0006e81530a5f48ea37710fb83cd86b38019b2bc6d318add1a22b04c3a6  dispatcharr-0.2.142-linux-arm64
+b1de3e097583cded2a0d7430248be95ac000c6a87d4b6e686e98c52cce7a6147  dispatcharr-0.2.143-darwin-arm64
+4f5bcd76cb059ebb552aa3b6bfefb4a970bc71bf73e5706e33a54240b9f32c17  dispatcharr-0.2.143-linux-amd64
+439004e1b7541369b825603bd97943ccc68e393f812542153d02b9170191b933  dispatcharr-0.2.143-linux-arm64
 7801e7ce3e8f630a8d9154682e712ebacbacce5e00b8e78bfc651182ac7c7122  app-links-0.1.0-darwin-arm64
 3d9832a1caeff357ad0dd1b433e6dadf20156fcdcee8bbc377251bb5671da2c8  app-links-0.1.0-linux-amd64
 064dbb50093daa8a912e05d3355e9a57e2f7eca9788939208b310ca802f44eb8  app-links-0.1.0-linux-arm64
