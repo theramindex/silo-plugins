@@ -114,8 +114,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.app-links",
-        "version": "0.1.0",
-        "checksum": "3d9832a1caeff357ad0dd1b433e6dadf20156fcdcee8bbc377251bb5671da2c8",
+        "version": "0.1.1",
+        "checksum": "4fddf5d944561260240ea9e67771f1fe56470eb829765638e5fb11333e5027d3",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -142,19 +142,19 @@
         "category": "Apps"
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-app-links",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.0/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.1/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.0/app-links-0.1.0-darwin-arm64",
-          "checksum": "7801e7ce3e8f630a8d9154682e712ebacbacce5e00b8e78bfc651182ac7c7122"
+          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.1/app-links-0.1.1-darwin-arm64",
+          "checksum": "c8e60bc871afe47d64325a1c5628c2c591757c0d2fa37fff0e9c4794a67976bf"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.0/app-links-0.1.0-linux-amd64",
-          "checksum": "3d9832a1caeff357ad0dd1b433e6dadf20156fcdcee8bbc377251bb5671da2c8"
+          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.1/app-links-0.1.1-linux-amd64",
+          "checksum": "4fddf5d944561260240ea9e67771f1fe56470eb829765638e5fb11333e5027d3"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.0/app-links-0.1.0-linux-arm64",
-          "checksum": "064dbb50093daa8a912e05d3355e9a57e2f7eca9788939208b310ca802f44eb8"
+          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.1/app-links-0.1.1-linux-arm64",
+          "checksum": "3321fa291413f7567554526aff4b6e2a6ba2936e48019e27997c5f96b52334d6"
         }
       }
     }
