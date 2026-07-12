@@ -7,3 +7,6 @@ b7c9cf554d7faf1b7866b4cca8512cdf17d04b418e666d05bd25310cb336153a  dispatcharr-0.
 a12edcaa9492f1b7876c6c3afd0d4a61f325ec9f0b68962ef137ffe33661df50  plugin-darwin-arm64-silo-plugin-local-metadata
 680ccb82809a906cd31d3f30f8038d837638aabca0f42e376db1dffbfe81e99c  plugin-linux-amd64-silo-plugin-local-metadata
 9792e4af799ceceed80d526d8cbe35a88c62b13020d39cfacc8c8f1a4ac59f2c  plugin-linux-arm64-silo-plugin-local-metadata
+6741d3238cba883635cac11cf07cbb885c2f960a5be27b5bdc0b23543be0990b  xtream-0.1.0-darwin-arm64
+65fee5b248bfca25cab1452e62c12648e3002fa97859b22aea7413a2f92c7525  xtream-0.1.0-linux-amd64
+0a1ed8567a989ae080b0437de030d6a3d503f17b1bf9e97cb83e488e7f248a13  xtream-0.1.0-linux-arm64

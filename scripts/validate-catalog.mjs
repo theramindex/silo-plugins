@@ -26,6 +26,13 @@ const catalogDisplayNotes = new Map([
       description: "Configurable external app launcher with fullscreen iframe shells and an admin app link manager.",
     },
   ],
+  [
+    "silo.ramindex.xtream",
+    {
+      displayName: "Xtreme Codes for Silo",
+      description: "Xtream Codes-first Live TV app with guide, VOD, series, provider Catch-up, and multiview.",
+    },
+  ],
 ]);
 
 const index = JSON.parse(readFileSync(manifestPath, "utf8"));

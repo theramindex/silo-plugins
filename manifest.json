@@ -163,6 +163,38 @@
           "checksum": "3321fa291413f7567554526aff4b6e2a6ba2936e48019e27997c5f96b52334d6"
         }
       }
+    },
+    {
+      "manifest": {
+        "plugin_id": "silo.ramindex.xtream",
+        "version": "0.1.0",
+        "checksum": "65fee5b248bfca25cab1452e62c12648e3002fa97859b22aea7413a2f92c7525",
+        "silo_api_version": "v1",
+        "supported_platforms": [
+          {"os": "darwin", "arch": "arm64"},
+          {"os": "linux", "arch": "amd64"},
+          {"os": "linux", "arch": "arm64"}
+        ],
+        "capabilities": [
+          {
+            "type": "scheduled_task.v1",
+            "id": "xtream-sync",
+            "display_name": "Xtreme Codes for Silo",
+            "description": "Xtream Codes-first Live TV app with guide, VOD, series, provider Catch-up, and multiview."
+          },
+          {"type": "scheduled_task.v1", "id": "xtream-refresh-channels", "display_name": "Refresh Xtreme channels", "description": "Refresh the configured Xtreme or M3U channel catalog."},
+          {"type": "scheduled_task.v1", "id": "xtream-refresh-epg", "display_name": "Refresh Xtreme guide", "description": "Refresh guide data from the configured source."},
+          {"type": "http_routes.v1", "id": "xtream-routes", "display_name": "Live TV", "description": "Browse and play configured Live TV sources."}
+        ],
+        "category": "Live TV"
+      },
+      "repo_url": "https://github.com/theramindex/silo-plugin-xtream-library",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/checksums.txt",
+      "binaries": {
+        "darwin/arm64": {"url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/xtream-0.1.0-darwin-arm64", "checksum": "6741d3238cba883635cac11cf07cbb885c2f960a5be27b5bdc0b23543be0990b"},
+        "linux/amd64": {"url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/xtream-0.1.0-linux-amd64", "checksum": "65fee5b248bfca25cab1452e62c12648e3002fa97859b22aea7413a2f92c7525"},
+        "linux/arm64": {"url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/xtream-0.1.0-linux-arm64", "checksum": "0a1ed8567a989ae080b0437de030d6a3d503f17b1bf9e97cb83e488e7f248a13"}
+      }
     }
   ]
 }

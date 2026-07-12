@@ -30,6 +30,8 @@ node scripts/validate-catalog.mjs
   VOD catalog, and series catalog routes.
 - `silo.ramindex.app-links` - configurable external app launcher with fullscreen iframe
   shells and an admin app link manager.
+- `silo.ramindex.xtream` - Xtream Codes-first Live TV app with guide, VOD, series,
+  provider Catch-up, and multiview.
 
 ## Installing In Silo
 
