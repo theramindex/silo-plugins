@@ -228,6 +228,56 @@
           "checksum": "0a1ed8567a989ae080b0437de030d6a3d503f17b1bf9e97cb83e488e7f248a13"
         }
       }
+    },
+    {
+      "manifest": {
+        "plugin_id": "silo.ramindex.oidc",
+        "version": "0.1.0",
+        "checksum": "a87cad27d16d379cb86a2162dc9a0e317d8041fe4ebccd545b617518e9f2a157",
+        "silo_api_version": "v1",
+        "supported_platforms": [
+          {
+            "os": "darwin",
+            "arch": "arm64"
+          },
+          {
+            "os": "linux",
+            "arch": "amd64"
+          },
+          {
+            "os": "linux",
+            "arch": "arm64"
+          }
+        ],
+        "capabilities": [
+          {
+            "type": "auth_provider.v1",
+            "id": "oidc",
+            "display_name": "OIDC Sign-In",
+            "description": "Sign in to Silo through an OpenID Connect identity provider.",
+            "auth_modes": [
+              "oauth2"
+            ]
+          }
+        ],
+        "category": "Auth"
+      },
+      "repo_url": "https://github.com/theramindex/silo-plugin-oidc",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-oidc/releases/download/v0.1.0/checksums.txt",
+      "binaries": {
+        "darwin/arm64": {
+          "url": "https://github.com/theramindex/silo-plugin-oidc/releases/download/v0.1.0/silo-security-0.1.0-darwin-arm64",
+          "checksum": "e72fae52c0fb79d0bcc41907da05c6c3999bc3b1b4e32d21369811015dc2a7b9"
+        },
+        "linux/amd64": {
+          "url": "https://github.com/theramindex/silo-plugin-oidc/releases/download/v0.1.0/silo-security-0.1.0-linux-amd64",
+          "checksum": "a87cad27d16d379cb86a2162dc9a0e317d8041fe4ebccd545b617518e9f2a157"
+        },
+        "linux/arm64": {
+          "url": "https://github.com/theramindex/silo-plugin-oidc/releases/download/v0.1.0/silo-security-0.1.0-linux-arm64",
+          "checksum": "4ef06d9078ccea966a1dd240589b355f0e39828e950331823008d6cdf0830376"
+        }
+      }
     }
   ]
 }

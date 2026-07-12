@@ -31,6 +31,8 @@ node scripts/validate-catalog.mjs
 - `silo.ramindex.app-links` - configurable external app launcher with fullscreen iframe
   shells and an admin app link manager.
 - `silo.ramindex.xtream` - Xtream Codes-first Live TV app with guide, VOD, series,
+
+- `silo.ramindex.oidc` - Native OpenID Connect sign-in provider for Silo.
   provider Catch-up, and multiview.
 
 ## Installing In Silo

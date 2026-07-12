@@ -33,6 +33,13 @@ const catalogDisplayNotes = new Map([
       description: "Xtream Codes-first Live TV app with guide, VOD, series, provider Catch-up, and multiview.",
     },
   ],
+  [
+    "silo.ramindex.oidc",
+    {
+      displayName: "OIDC Sign-In",
+      description: "Sign in to Silo through an OpenID Connect identity provider.",
+    },
+  ],
 ]);
 
 const index = JSON.parse(readFileSync(manifestPath, "utf8"));
