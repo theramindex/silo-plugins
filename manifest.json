@@ -55,8 +55,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.dispatcharr",
-        "version": "0.3.27",
-        "checksum": "2fdb8966ba28a3e2f6b4042ad13bdfdd5a2325665dfa310193024123d0b2a1fb",
+        "version": "0.3.28",
+        "checksum": "f18b10911e9b4b93cedda3573cd7a2c8349427581a5c2675a3a294dccc6cadd3",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -101,19 +101,19 @@
         "category": "Video/Live TV"
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-dispatcharr",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.27/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.28/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.27/dispatcharr-0.3.27-darwin-arm64",
-          "checksum": "0e54e9840a426a67c7ce16c84966e25142f730dad2572e39ab3a44c47c9c00e6"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.28/dispatcharr-0.3.28-darwin-arm64",
+          "checksum": "efb8e33b923b2dc13b01c45075bb93265ed15522adbda21357bc0e66a279a542"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.27/dispatcharr-0.3.27-linux-amd64",
-          "checksum": "2fdb8966ba28a3e2f6b4042ad13bdfdd5a2325665dfa310193024123d0b2a1fb"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.28/dispatcharr-0.3.28-linux-amd64",
+          "checksum": "f18b10911e9b4b93cedda3573cd7a2c8349427581a5c2675a3a294dccc6cadd3"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.27/dispatcharr-0.3.27-linux-arm64",
-          "checksum": "b7c9cf554d7faf1b7866b4cca8512cdf17d04b418e666d05bd25310cb336153a"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.28/dispatcharr-0.3.28-linux-arm64",
+          "checksum": "114e9642ee27c437b502d557bb6a82780af33900b07ae418c90535974886a578"
         }
       }
     },
@@ -171,9 +171,18 @@
         "checksum": "65fee5b248bfca25cab1452e62c12648e3002fa97859b22aea7413a2f92c7525",
         "silo_api_version": "v1",
         "supported_platforms": [
-          {"os": "darwin", "arch": "arm64"},
-          {"os": "linux", "arch": "amd64"},
-          {"os": "linux", "arch": "arm64"}
+          {
+            "os": "darwin",
+            "arch": "arm64"
+          },
+          {
+            "os": "linux",
+            "arch": "amd64"
+          },
+          {
+            "os": "linux",
+            "arch": "arm64"
+          }
         ],
         "capabilities": [
           {
@@ -182,18 +191,42 @@
             "display_name": "Xtreme Codes for Silo",
             "description": "Xtream Codes-first Live TV app with guide, VOD, series, provider Catch-up, and multiview."
           },
-          {"type": "scheduled_task.v1", "id": "xtream-refresh-channels", "display_name": "Refresh Xtreme channels", "description": "Refresh the configured Xtreme or M3U channel catalog."},
-          {"type": "scheduled_task.v1", "id": "xtream-refresh-epg", "display_name": "Refresh Xtreme guide", "description": "Refresh guide data from the configured source."},
-          {"type": "http_routes.v1", "id": "xtream-routes", "display_name": "Live TV", "description": "Browse and play configured Live TV sources."}
+          {
+            "type": "scheduled_task.v1",
+            "id": "xtream-refresh-channels",
+            "display_name": "Refresh Xtreme channels",
+            "description": "Refresh the configured Xtreme or M3U channel catalog."
+          },
+          {
+            "type": "scheduled_task.v1",
+            "id": "xtream-refresh-epg",
+            "display_name": "Refresh Xtreme guide",
+            "description": "Refresh guide data from the configured source."
+          },
+          {
+            "type": "http_routes.v1",
+            "id": "xtream-routes",
+            "display_name": "Live TV",
+            "description": "Browse and play configured Live TV sources."
+          }
         ],
         "category": "Live TV"
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-xtream-library",
       "checksums_url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/checksums.txt",
       "binaries": {
-        "darwin/arm64": {"url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/xtream-0.1.0-darwin-arm64", "checksum": "6741d3238cba883635cac11cf07cbb885c2f960a5be27b5bdc0b23543be0990b"},
-        "linux/amd64": {"url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/xtream-0.1.0-linux-amd64", "checksum": "65fee5b248bfca25cab1452e62c12648e3002fa97859b22aea7413a2f92c7525"},
-        "linux/arm64": {"url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/xtream-0.1.0-linux-arm64", "checksum": "0a1ed8567a989ae080b0437de030d6a3d503f17b1bf9e97cb83e488e7f248a13"}
+        "darwin/arm64": {
+          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/xtream-0.1.0-darwin-arm64",
+          "checksum": "6741d3238cba883635cac11cf07cbb885c2f960a5be27b5bdc0b23543be0990b"
+        },
+        "linux/amd64": {
+          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/xtream-0.1.0-linux-amd64",
+          "checksum": "65fee5b248bfca25cab1452e62c12648e3002fa97859b22aea7413a2f92c7525"
+        },
+        "linux/arm64": {
+          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.1.0/xtream-0.1.0-linux-arm64",
+          "checksum": "0a1ed8567a989ae080b0437de030d6a3d503f17b1bf9e97cb83e488e7f248a13"
+        }
       }
     }
   ]
