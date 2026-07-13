@@ -29,7 +29,7 @@ const catalogDisplayNotes = new Map([
   [
     "silo.ramindex.xtream",
     {
-      displayName: "Xtreme Codes for Silo",
+      displayName: "XC for Silo",
       description: "Xtream Codes-first Live TV app with guide, VOD, series, provider Catch-up, and multiview.",
     },
   ],
