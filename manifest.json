@@ -167,8 +167,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.xtream",
-        "version": "0.2.17",
-        "checksum": "4b1dbd5454ba5a57ddc7f27c97eabdbc05944647fb426e45047279e2e706c814",
+        "version": "0.2.18",
+        "checksum": "a0e71685b56bd9a3d98d05ef32441ba9ad83ccaa2a5a61221cdb2d0ac2777ffd",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -213,19 +213,19 @@
         "category": "Live TV"
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-xtream-library",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.17/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.18/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.17/xtream-0.2.17-darwin-arm64",
-          "checksum": "1468d3d999a15cf34ef720b8aa4f58314f3eab85289ca87f06dd467bf09fa749"
+          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.18/xtream-0.2.18-darwin-arm64",
+          "checksum": "3cb9ca43131c208963d2432cad375f5fef490584f592ec95d5ac7ce93f44ecb6"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.17/xtream-0.2.17-linux-amd64",
-          "checksum": "4b1dbd5454ba5a57ddc7f27c97eabdbc05944647fb426e45047279e2e706c814"
+          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.18/xtream-0.2.18-linux-amd64",
+          "checksum": "a0e71685b56bd9a3d98d05ef32441ba9ad83ccaa2a5a61221cdb2d0ac2777ffd"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.17/xtream-0.2.17-linux-arm64",
-          "checksum": "0d5e607d7454130c274057b9dd8b8c3551feec63aa06b772c062843abb34a078"
+          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.18/xtream-0.2.18-linux-arm64",
+          "checksum": "a0c56e581304ab47012e2eb8c0883f5ea2f6f2978d22e1b1e7d803d05dd641a9"
         }
       }
     },
