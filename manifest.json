@@ -25,24 +25,12 @@
             "type": "scheduled_task.v1",
             "id": "dispatcharr-sync",
             "display_name": "Dispatcharr for Silo",
-            "description": "Dispatcharr-backed IPTV app with Live TV, guide, favorites, VOD catalog, and series catalog routes."
-          },
-          {
-            "type": "scheduled_task.v1",
-            "id": "dispatcharr-refresh-channels",
-            "display_name": "Refresh Live TV Channels",
-            "description": "Refreshes Dispatcharr channel and group metadata."
-          },
-          {
-            "type": "scheduled_task.v1",
-            "id": "dispatcharr-refresh-epg",
-            "display_name": "Refresh Live TV Guide",
-            "description": "Purges stale guide data and refreshes Dispatcharr EPG programs."
+            "description": "Dispatcharr-backed Live TV, guide, saved lineups, sports, events, playback, and recording integration."
           },
           {
             "type": "http_routes.v1",
             "id": "dispatcharr-routes",
-            "display_name": "Live TV App",
+            "display_name": "Dispatcharr for Silo",
             "description": "Serves the Dispatcharr IPTV app, API, and playback routes."
           }
         ],
