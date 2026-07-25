@@ -9,15 +9,15 @@ import (
 
 func TestBuildPackageFromRelease_MinimalManifestAndAssets(t *testing.T) {
 	source := &pluginv1.PluginManifest{
-		PluginId:       "silo.ramindex.local-metadata",
+		PluginId:       "silo.ramindex.app-links",
 		Version:        "0.1.0",
 		SiloApiVersion: "v1",
 		Capabilities: []*pluginv1.CapabilityDescriptor{
 			{
-				Type:        "metadata_provider.v1",
-				Id:          "local-metadata",
-				DisplayName: "Local Metadata: NFO Sidecars",
-				Description: "Read-only same-basename NFO and local artwork metadata provider for Silo.",
+				Type:        "http_routes.v1",
+				Id:          "app-links-routes",
+				DisplayName: "App Links",
+				Description: "Configurable external app launcher with fullscreen iframe shells and an admin app link manager.",
 			},
 		},
 	}
@@ -25,21 +25,21 @@ func TestBuildPackageFromRelease_MinimalManifestAndAssets(t *testing.T) {
 	release := Release{
 		TagName: "v0.1.0",
 		Assets: []Asset{
-			{Name: "plugin-linux-amd64-silo-plugin-local-metadata", BrowserDownloadURL: "https://example.invalid/silo-plugin-local-metadata/plugin-linux-amd64-silo-plugin-local-metadata"},
-			{Name: "checksums.txt", BrowserDownloadURL: "https://example.invalid/silo-plugin-local-metadata/checksums.txt"},
-			{Name: "notes.txt", BrowserDownloadURL: "https://example.invalid/silo-plugin-local-metadata/notes.txt"},
+			{Name: "plugin-linux-amd64-silo-plugin-app-links", BrowserDownloadURL: "https://example.invalid/silo-plugin-app-links/plugin-linux-amd64-silo-plugin-app-links"},
+			{Name: "checksums.txt", BrowserDownloadURL: "https://example.invalid/silo-plugin-app-links/checksums.txt"},
+			{Name: "notes.txt", BrowserDownloadURL: "https://example.invalid/silo-plugin-app-links/notes.txt"},
 		},
 	}
 
-	pkg, err := BuildPackageFromRelease("theramindex/silo-plugin-local-metadata", source, release)
+	pkg, err := BuildPackageFromRelease("theramindex/silo-plugin-app-links", source, release)
 	if err != nil {
 		t.Fatalf("BuildPackageFromRelease() error = %v", err)
 	}
 
-	if pkg.RepoURL != "https://github.com/theramindex/silo-plugin-local-metadata" {
+	if pkg.RepoURL != "https://github.com/theramindex/silo-plugin-app-links" {
 		t.Fatalf("RepoURL = %q", pkg.RepoURL)
 	}
-	if pkg.Manifest.GetPluginId() != "silo.ramindex.local-metadata" {
+	if pkg.Manifest.GetPluginId() != "silo.ramindex.app-links" {
 		t.Fatalf("PluginID = %q", pkg.Manifest.GetPluginId())
 	}
 	if pkg.Manifest.GetVersion() != "0.1.0" {
@@ -55,14 +55,14 @@ func TestBuildPackageFromRelease_MinimalManifestAndAssets(t *testing.T) {
 
 func TestBuildPackageFromRelease_RequiresSiloAPIVersion(t *testing.T) {
 	source := &pluginv1.PluginManifest{
-		PluginId: "silo.ramindex.local-metadata",
+		PluginId: "silo.ramindex.app-links",
 		Capabilities: []*pluginv1.CapabilityDescriptor{
-			{Type: "metadata_provider.v1", Id: "local-metadata"},
+			{Type: "http_routes.v1", Id: "app-links-routes"},
 		},
 	}
 	release := Release{TagName: "v0.1.0"}
 
-	_, err := BuildPackageFromRelease("theramindex/silo-plugin-local-metadata", source, release)
+	_, err := BuildPackageFromRelease("theramindex/silo-plugin-app-links", source, release)
 	if err == nil || !strings.Contains(err.Error(), "silo_api_version") {
 		t.Fatalf("expected silo_api_version error, got %v", err)
 	}
@@ -72,16 +72,16 @@ func TestUpsertPackage_ReplacesExistingPluginAndSorts(t *testing.T) {
 	index := RepositoryIndex{
 		Plugins: []CatalogPackage{
 			{Manifest: &pluginv1.PluginManifest{PluginId: "silo.tvdb", Version: "1.0.0"}},
-			{Manifest: &pluginv1.PluginManifest{PluginId: "silo.ramindex.local-metadata", Version: "0.0.9"}},
+			{Manifest: &pluginv1.PluginManifest{PluginId: "silo.ramindex.app-links", Version: "0.0.9"}},
 		},
 	}
 
 	updated := CatalogPackage{
 		Manifest: &pluginv1.PluginManifest{
-			PluginId: "silo.ramindex.local-metadata",
+			PluginId: "silo.ramindex.app-links",
 			Version:  "0.1.0",
 		},
-		RepoURL: "https://github.com/theramindex/silo-plugin-local-metadata",
+		RepoURL: "https://github.com/theramindex/silo-plugin-app-links",
 	}
 
 	index = UpsertPackage(index, updated)
@@ -89,7 +89,7 @@ func TestUpsertPackage_ReplacesExistingPluginAndSorts(t *testing.T) {
 	if len(index.Plugins) != 2 {
 		t.Fatalf("Plugins length = %d, want 2", len(index.Plugins))
 	}
-	if index.Plugins[0].Manifest.GetPluginId() != "silo.ramindex.local-metadata" {
+	if index.Plugins[0].Manifest.GetPluginId() != "silo.ramindex.app-links" {
 		t.Fatalf("Plugins[0].PluginID = %q", index.Plugins[0].Manifest.GetPluginId())
 	}
 	if index.Plugins[0].Manifest.GetVersion() != "0.1.0" {

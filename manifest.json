@@ -2,58 +2,6 @@
   "plugins": [
     {
       "manifest": {
-        "plugin_id": "silo.ramindex.local-metadata",
-        "version": "0.1.15",
-        "checksum": "680ccb82809a906cd31d3f30f8038d837638aabca0f42e376db1dffbfe81e99c",
-        "silo_api_version": "v1",
-        "supported_platforms": [
-          {
-            "os": "linux",
-            "arch": "amd64"
-          }
-        ],
-        "capabilities": [
-          {
-            "type": "metadata_provider.v1",
-            "id": "local-metadata",
-            "display_name": "Local Metadata: NFO Sidecars",
-            "description": "Read-only Jellyfin-compatible NFO and local artwork metadata provider for Silo.",
-            "metadata": {
-              "default_priority": {
-                "movie": 1,
-                "series": 1,
-                "season": 1,
-                "episode": 1
-              }
-            }
-          },
-          {
-            "type": "image_resolver.v1",
-            "id": "local-metadata",
-            "display_name": "Local Metadata Images",
-            "description": "Resolve local sidecar artwork paths for Silo image serving."
-          }
-        ]
-      },
-      "repo_url": "https://github.com/theramindex/silo-plugin-local-metadata",
-      "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.15/checksums.txt",
-      "binaries": {
-        "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.15/plugin-darwin-arm64-silo-plugin-local-metadata",
-          "checksum": "a12edcaa9492f1b7876c6c3afd0d4a61f325ec9f0b68962ef137ffe33661df50"
-        },
-        "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.15/plugin-linux-amd64-silo-plugin-local-metadata",
-          "checksum": "680ccb82809a906cd31d3f30f8038d837638aabca0f42e376db1dffbfe81e99c"
-        },
-        "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.15/plugin-linux-arm64-silo-plugin-local-metadata",
-          "checksum": "9792e4af799ceceed80d526d8cbe35a88c62b13020d39cfacc8c8f1a4ac59f2c"
-        }
-      }
-    },
-    {
-      "manifest": {
         "plugin_id": "silo.ramindex.dispatcharr",
         "version": "0.3.75",
         "checksum": "49dc74ba56c471696f8e89c63b8cb1e476f2a083a4a7bff192caefdd2dc1679a",

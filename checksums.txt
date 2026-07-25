@@ -4,9 +4,6 @@ c8e60bc871afe47d64325a1c5628c2c591757c0d2fa37fff0e9c4794a67976bf  app-links-0.1.
 6adb57b59f917021b4b2567762b72c22df476e23c6ab677d815d67d1272ec553  dispatcharr-0.3.75-darwin-arm64
 49dc74ba56c471696f8e89c63b8cb1e476f2a083a4a7bff192caefdd2dc1679a  dispatcharr-0.3.75-linux-amd64
 5939bb3fd03f867130bae9ccd4b19ddd1508eb37db90d4952b1fa5f5ae88c0ce  dispatcharr-0.3.75-linux-arm64
-a12edcaa9492f1b7876c6c3afd0d4a61f325ec9f0b68962ef137ffe33661df50  plugin-darwin-arm64-silo-plugin-local-metadata
-680ccb82809a906cd31d3f30f8038d837638aabca0f42e376db1dffbfe81e99c  plugin-linux-amd64-silo-plugin-local-metadata
-9792e4af799ceceed80d526d8cbe35a88c62b13020d39cfacc8c8f1a4ac59f2c  plugin-linux-arm64-silo-plugin-local-metadata
 e72fae52c0fb79d0bcc41907da05c6c3999bc3b1b4e32d21369811015dc2a7b9  silo-security-0.1.0-darwin-arm64
 a87cad27d16d379cb86a2162dc9a0e317d8041fe4ebccd545b617518e9f2a157  silo-security-0.1.0-linux-amd64
 4ef06d9078ccea966a1dd240589b355f0e39828e950331823008d6cdf0830376  silo-security-0.1.0-linux-arm64

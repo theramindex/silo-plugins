@@ -6,13 +6,6 @@ const checksumsPath = new URL("../checksums.txt", import.meta.url);
 
 const catalogDisplayNotes = new Map([
   [
-    "silo.ramindex.local-metadata",
-    {
-      displayName: "Local Metadata: NFO Sidecars",
-      description: "Read-only Jellyfin-compatible NFO and local artwork metadata provider for Silo.",
-    },
-  ],
-  [
     "silo.ramindex.dispatcharr",
     {
       displayName: "Dispatcharr for Silo",

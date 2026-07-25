@@ -14,24 +14,24 @@ Each catalog entry includes enough data for list/install discovery:
 ```json
 {
   "manifest": {
-    "plugin_id": "silo.ramindex.local-metadata",
-    "version": "0.1.9",
+    "plugin_id": "silo.ramindex.app-links",
+    "version": "0.1.1",
     "checksum": "<linux-amd64-binary-sha256>",
     "silo_api_version": "v1",
     "capabilities": [
       {
-        "type": "metadata_provider.v1",
-        "id": "local-metadata",
-        "display_name": "Local Metadata: NFO Sidecars",
-        "description": "Read-only same-basename NFO and local artwork metadata provider for Silo."
+        "type": "http_routes.v1",
+        "id": "app-links-routes",
+        "display_name": "App Links",
+        "description": "Configurable external app launcher with fullscreen iframe shells and an admin app link manager."
       }
     ]
   },
-  "repo_url": "https://github.com/theramindex/silo-plugin-local-metadata",
-  "checksums_url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.9/checksums.txt",
+  "repo_url": "https://github.com/theramindex/silo-plugin-app-links",
+  "checksums_url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.1/checksums.txt",
   "binaries": {
     "linux/amd64": {
-      "url": "https://github.com/theramindex/silo-plugins/releases/download/v0.1.9/plugin-linux-amd64-silo-plugin-local-metadata",
+      "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.1/app-links-0.1.1-linux-amd64",
       "checksum": "<linux-amd64-binary-sha256>"
     }
   }
@@ -49,8 +49,7 @@ Each catalog entry includes enough data for list/install discovery:
 node scripts/validate-catalog.mjs
 ```
 
-5. Publish the release assets to `theramindex/silo-plugins`; the
-   `silo-plugin-local-metadata` release workflow can do this when the plugin
-   repository has a `CATALOG_PUSH_TOKEN` secret with write access to this
-   catalog repository.
+5. Publish the release assets from the plugin repository. If a workflow updates
+   this catalog, give that plugin repository a `CATALOG_PUSH_TOKEN` secret with
+   write access to this catalog repository.
 6. Read back the published raw manifest and validate it.
