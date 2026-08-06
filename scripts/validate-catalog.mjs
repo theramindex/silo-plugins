@@ -22,8 +22,8 @@ const catalogDisplayNotes = new Map([
   [
     "silo.ramindex.local-metadata",
     {
-      displayName: "Silo Local Metadata",
-      description: "Reads local NFO metadata and sidecar artwork stored beside media files.",
+      displayName: "Local Artwork",
+      description: "Adds local posters, backdrops, logos, and stills alongside Silo's built-in NFO metadata.",
     },
   ],
   [

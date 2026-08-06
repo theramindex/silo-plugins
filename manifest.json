@@ -103,8 +103,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.local-metadata",
-        "version": "0.1.18",
-        "checksum": "7415b02b927675ca4fc51e5f5eff575f8926e1201cdecc0360fd52e3ffa8a3e5",
+        "version": "0.2.0",
+        "checksum": "46dc41f162d9b88dedddf3ebdc8126ca30eb65e20406f7e0bf1202a10a08a6e0",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -124,8 +124,8 @@
           {
             "type": "metadata_provider.v1",
             "id": "local-metadata",
-            "display_name": "Silo Local Metadata",
-            "description": "Reads local NFO metadata and sidecar artwork stored beside media files.",
+            "display_name": "Local Artwork",
+            "description": "Adds local posters, backdrops, logos, and stills alongside Silo's built-in NFO metadata.",
             "metadata": {
               "default_priority": {
                 "movie": 1,
@@ -138,10 +138,11 @@
           {
             "type": "image_resolver.v1",
             "id": "local-metadata",
-            "display_name": "Silo Local Metadata Images",
-            "description": "Resolves local sidecar artwork paths for Silo image serving.",
+            "display_name": "Local Artwork Images",
+            "description": "Resolves local artwork paths for Silo image serving without object storage.",
             "metadata": {
               "schemes": [
+                "local-artwork",
                 "local-metadata"
               ],
               "priority": 100
@@ -150,20 +151,20 @@
         ],
         "category": "Video/Metadata"
       },
-      "repo_url": "https://github.com/theramindex/silo-plugin-local-metadata",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-local-metadata/releases/download/v0.1.18/checksums.txt",
+      "repo_url": "https://github.com/theramindex/silo-plugin-local-artwork",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.0/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-local-metadata/releases/download/v0.1.18/plugin-darwin-arm64",
-          "checksum": "e493905968c47217e3f1eca41d2b5a9bc711fb85dbc1090884ac99df93836061"
+          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.0/plugin-darwin-arm64",
+          "checksum": "95ed0aa87149b5ec6243e81a94003fc30757a4592d82682f59216399e2a980a2"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-local-metadata/releases/download/v0.1.18/plugin-linux-amd64",
-          "checksum": "7415b02b927675ca4fc51e5f5eff575f8926e1201cdecc0360fd52e3ffa8a3e5"
+          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.0/plugin-linux-amd64",
+          "checksum": "46dc41f162d9b88dedddf3ebdc8126ca30eb65e20406f7e0bf1202a10a08a6e0"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-local-metadata/releases/download/v0.1.18/plugin-linux-arm64",
-          "checksum": "5eb472de8a74110007a4c371ae61800e6047b6d3c674c71e9a86d613d766a117"
+          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.0/plugin-linux-arm64",
+          "checksum": "869777ae94232eb8479eb98188f368d681ce1627120d6ab4d7d913fa443e7302"
         }
       }
     },
