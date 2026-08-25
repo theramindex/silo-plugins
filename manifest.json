@@ -103,8 +103,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.local-metadata",
-        "version": "0.2.0",
-        "checksum": "46dc41f162d9b88dedddf3ebdc8126ca30eb65e20406f7e0bf1202a10a08a6e0",
+        "version": "0.2.1",
+        "checksum": "27c6a827576d9e92975eede6a6a0fc02fb6e183e82f4cef4653c9fc16fed4a90",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -152,19 +152,19 @@
         "category": "Video/Metadata"
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-local-artwork",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.0/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.1/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.0/plugin-darwin-arm64",
-          "checksum": "95ed0aa87149b5ec6243e81a94003fc30757a4592d82682f59216399e2a980a2"
+          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.1/plugin-darwin-arm64",
+          "checksum": "4f6f77ce6657af7178277da93ae5894d8c33419310ceb5f2807e071226fbd8d7"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.0/plugin-linux-amd64",
-          "checksum": "46dc41f162d9b88dedddf3ebdc8126ca30eb65e20406f7e0bf1202a10a08a6e0"
+          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.1/plugin-linux-amd64",
+          "checksum": "27c6a827576d9e92975eede6a6a0fc02fb6e183e82f4cef4653c9fc16fed4a90"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.0/plugin-linux-arm64",
-          "checksum": "869777ae94232eb8479eb98188f368d681ce1627120d6ab4d7d913fa443e7302"
+          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.1/plugin-linux-arm64",
+          "checksum": "b6cb96ef9dede289e52497a339b2c443153eafc57d92c7cb32d7a4191f8960cc"
         }
       }
     },
