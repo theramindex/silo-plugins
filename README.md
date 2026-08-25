@@ -18,7 +18,7 @@ The versions and capabilities below are taken from the current `manifest.json`.
 
 | Plugin | Version | Category | Description | Platforms |
 | --- | ---: | --- | --- | --- |
-| [Dispatcharr for Silo](https://github.com/theramindex/silo-plugin-dispatcharr)  (`silo.ramindex.dispatcharr`) | `0.3.94` | Video / Live TV | Dispatcharr-backed Live TV app with guide, favorites, VOD, and series catalog routes. DVR/Recordings are available only in Dispatcharr Direct mode, not Xtream Codes or M3U/XMLTV mode. | macOS ARM64, Linux AMD64, Linux ARM64 |
+| [Dispatcharr for Silo](https://github.com/theramindex/silo-plugin-dispatcharr)  (`silo.ramindex.dispatcharr`) | `0.3.95` | Video / Live TV | Dispatcharr-backed Live TV app with guide, favorites, VOD, and series catalog routes. DVR/Recordings are available only in Dispatcharr Direct mode, not Xtream Codes or M3U/XMLTV mode. | macOS ARM64, Linux AMD64, Linux ARM64 |
 | [App Links](https://github.com/theramindex/silo-plugin-app-links)  (`silo.ramindex.app-links`) | `0.1.1` | Apps | Configurable external app launcher with fullscreen iframe shells and an admin app-link manager. | macOS ARM64, Linux AMD64, Linux ARM64 |
 | [XC for Silo](https://github.com/theramindex/silo-plugin-xtream-library)  (`silo.ramindex.xtream`) | `0.2.69` | Live TV | Xtream Codes-first Live TV app with guide, VOD, series, provider catch-up, and multiview. It also supports M3U channel catalogs and guide sources. | macOS ARM64, Linux AMD64, Linux ARM64 |
 | [OIDC Sign-In](https://github.com/theramindex/silo-plugin-oidc)  (`silo.ramindex.oidc`) | `0.1.0` | Authentication | OpenID Connect sign-in provider for Silo using OAuth 2.0. | macOS ARM64, Linux AMD64, Linux ARM64 |
