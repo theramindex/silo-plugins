@@ -3,8 +3,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.dispatcharr",
-        "version": "0.3.172",
-        "checksum": "c31844f0d6e6ca862658a95f303f7f2c7b52a454bfec2c2f44ce4fdf63cb9ec8",
+        "version": "0.3.173",
+        "checksum": "8e4a508ed17f7c2d6ab88aa8415735f8fa00beb3b67736720d19c8f3b66101ea",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -24,32 +24,62 @@
           {
             "type": "scheduled_task.v1",
             "id": "dispatcharr-sync",
-            "display_name": "Dispatcharr for Silo",
-            "description": "Dispatcharr-backed Live TV, guide, saved lineups, sports, events, playback, and recording integration."
+            "display_name": "Dispatcharr catalog sync",
+            "description": "Syncs Live TV channels, guide, VOD, and series from the configured source."
+          },
+          {
+            "type": "scheduled_task.v1",
+            "id": "dispatcharr-refresh-channels",
+            "display_name": "Dispatcharr channel refresh",
+            "description": "Refreshes the Live TV channel lineup without rebuilding the full catalog."
+          },
+          {
+            "type": "scheduled_task.v1",
+            "id": "dispatcharr-refresh-epg",
+            "display_name": "Dispatcharr guide refresh",
+            "description": "Refreshes guide/EPG data for the current Live TV lineup."
           },
           {
             "type": "http_routes.v1",
             "id": "dispatcharr-routes",
-            "display_name": "Dispatcharr for Silo",
-            "description": "Serves the Dispatcharr IPTV app, API, and playback routes."
+            "display_name": "Live TV app",
+            "description": "Serves the Live TV app, API, and playback routes."
           }
         ],
-        "category": "Video/Live TV"
+        "category": "Video/Live TV",
+        "presentation": {
+          "display_name": "Dispatcharr for Silo",
+          "summary": "Live TV, guide, sports, and DVR plugin for Silo, backed by Dispatcharr.",
+          "description_markdown": "Dispatcharr plugin for Silo. It presents Live TV, the TV guide, sports, events, VOD, series, and Dispatcharr DVR inside Silo. Playback and recordings stay on the configured Dispatcharr, Xtream Codes, or M3U/XMLTV source.",
+          "setup_markdown": "1. Install the plugin in Silo Server.\n2. Open Dispatcharr Admin and choose Dispatcharr Direct, Xtream Codes, or M3U/XMLTV.\n3. For Dispatcharr Direct, use an Admin API key from System > Users > Edit User > API & XC.\n4. Enable the catalog sync scheduled task after install.",
+          "homepage_url": "https://github.com/theramindex/silo-plugin-dispatcharr",
+          "source_url": "https://github.com/theramindex/silo-plugin-dispatcharr",
+          "support_url": "https://github.com/theramindex/silo-plugin-dispatcharr/issues",
+          "changelog_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases",
+          "publisher_name": "Ramindex",
+          "publisher_url": "https://github.com/theramindex",
+          "license_spdx": "AGPL-3.0-only"
+        },
+        "metadata": {
+          "display_name": "Dispatcharr for Silo",
+          "summary": "Live TV, guide, sports, and DVR plugin for Silo, backed by Dispatcharr.",
+          "jellyfin_api_integration": false
+        }
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-dispatcharr",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.172/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.173/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.172/dispatcharr-0.3.172-darwin-arm64",
-          "checksum": "a1caf152794d6ccdb0f833167229f01bc08abb0d0c8ebbb1ae7d7ca50ec382e4"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.173/dispatcharr-0.3.173-darwin-arm64",
+          "checksum": "26c24b89237bfd2f88b1006caa73ab95de39d96d737c7fb4685d00235e1bf7cb"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.172/dispatcharr-0.3.172-linux-amd64",
-          "checksum": "c31844f0d6e6ca862658a95f303f7f2c7b52a454bfec2c2f44ce4fdf63cb9ec8"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.173/dispatcharr-0.3.173-linux-amd64",
+          "checksum": "8e4a508ed17f7c2d6ab88aa8415735f8fa00beb3b67736720d19c8f3b66101ea"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.172/dispatcharr-0.3.172-linux-arm64",
-          "checksum": "5b889011fe4affae4ae40055d14314d0bfbfc3b27696757c888b5bcd9b8589d8"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.173/dispatcharr-0.3.173-linux-arm64",
+          "checksum": "746c019c5b7006612e3289c45c1fa243228ccbd514c0e32c5417c7af334aa0e0"
         }
       }
     },
