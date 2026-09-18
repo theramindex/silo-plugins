@@ -81,14 +81,29 @@ for (const pkg of index.plugins) {
   if (!expectedDisplayNote) {
     throw new Error(`${manifest.plugin_id} is missing from catalogDisplayNotes`);
   }
-  const primaryCapability = manifest.capabilities[0];
-  if (primaryCapability.display_name !== expectedDisplayNote.displayName) {
-    throw new Error(
-      `${manifest.plugin_id} first capability display_name must be "${expectedDisplayNote.displayName}"`,
-    );
-  }
-  if (primaryCapability.description !== expectedDisplayNote.description) {
-    throw new Error(`${manifest.plugin_id} first capability description must preserve the catalog note`);
+  const presentation = manifest.presentation;
+  if (presentation) {
+    if (presentation.display_name !== expectedDisplayNote.displayName) {
+      throw new Error(
+        `${manifest.plugin_id} presentation.display_name must be "${expectedDisplayNote.displayName}"`,
+      );
+    }
+    if (presentation.publisher_name === "Silo") {
+      throw new Error(`${manifest.plugin_id} publisher_name must not be Silo`);
+    }
+    if (!presentation.source_url) {
+      throw new Error(`${manifest.plugin_id} presentation.source_url is required`);
+    }
+  } else {
+    const primaryCapability = manifest.capabilities[0];
+    if (primaryCapability.display_name !== expectedDisplayNote.displayName) {
+      throw new Error(
+        `${manifest.plugin_id} first capability display_name must be "${expectedDisplayNote.displayName}"`,
+      );
+    }
+    if (primaryCapability.description !== expectedDisplayNote.description) {
+      throw new Error(`${manifest.plugin_id} first capability description must preserve the catalog note`);
+    }
   }
 
   const key = `${manifest.plugin_id}@${manifest.version}`;

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	pluginv1 "github.com/Silo-Server/silo-plugin-sdk/pkg/pluginproto/silo/plugin/v1"
+	"github.com/Silo-Server/silo-plugin-sdk/pkg/pluginsdk/capability"
 )
 
 func TestBuildPackageFromRelease_MinimalManifestAndAssets(t *testing.T) {
@@ -14,7 +15,7 @@ func TestBuildPackageFromRelease_MinimalManifestAndAssets(t *testing.T) {
 		SiloApiVersion: "v1",
 		Capabilities: []*pluginv1.CapabilityDescriptor{
 			{
-				Type:        "http_routes.v1",
+				Type:        capability.HTTPRoutes,
 				Id:          "app-links-routes",
 				DisplayName: "App Links",
 				Description: "Configurable external app launcher with fullscreen iframe shells and an admin app link manager.",
@@ -57,7 +58,7 @@ func TestBuildPackageFromRelease_RequiresSiloAPIVersion(t *testing.T) {
 	source := &pluginv1.PluginManifest{
 		PluginId: "silo.ramindex.app-links",
 		Capabilities: []*pluginv1.CapabilityDescriptor{
-			{Type: "http_routes.v1", Id: "app-links-routes"},
+			{Type: capability.HTTPRoutes, Id: "app-links-routes"},
 		},
 	}
 	release := Release{TagName: "v0.1.0"}
