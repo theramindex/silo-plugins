@@ -3,8 +3,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.dispatcharr",
-        "version": "0.3.201",
-        "checksum": "eb544914838e97607d13784b4d5b28ff828ecd7946ee24f43347eeba2021e7e2",
+        "version": "0.3.202",
+        "checksum": "97807e21cdaddb7eefc878349451f1bd61e0f776dcae9e6d559320a0c6f05920",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -67,19 +67,19 @@
         }
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-dispatcharr",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.201/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.202/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.201/dispatcharr-0.3.201-darwin-arm64",
-          "checksum": "55c233a12d98965b74a6880cdae3608ccf7e4356d1d5bc59fe61ce49a7d9a8eb"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.202/dispatcharr-0.3.202-darwin-arm64",
+          "checksum": "ff9ae823986b17e9058a97af9c0469deb46b4fce686a415f4e4353e7f132cca0"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.201/dispatcharr-0.3.201-linux-amd64",
-          "checksum": "eb544914838e97607d13784b4d5b28ff828ecd7946ee24f43347eeba2021e7e2"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.202/dispatcharr-0.3.202-linux-amd64",
+          "checksum": "97807e21cdaddb7eefc878349451f1bd61e0f776dcae9e6d559320a0c6f05920"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.201/dispatcharr-0.3.201-linux-arm64",
-          "checksum": "175ad75c48e8c320438fcb06208af911abefd3ad2ae8332f1564ab218e914a62"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.3.202/dispatcharr-0.3.202-linux-arm64",
+          "checksum": "621f78f32305afea378a88bfab7bbbcf57ec6d2fd68a7e148a88cf829701f5a0"
         }
       }
     },
@@ -201,8 +201,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.xtream",
-        "version": "0.2.75",
-        "checksum": "22792a76961304c3d526dc534679251422aa6db306b017b9d8eb4bb480718e3a",
+        "version": "0.2.76",
+        "checksum": "5ae95e02e58839abd295658b03e2ac821be58587e5c31f346874e6df7cefcbec",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -247,19 +247,19 @@
         "category": "Live TV"
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-xtream-library",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.75/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.76/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.75/xtream-0.2.75-darwin-arm64",
-          "checksum": "9a23bae26026201272e26a10d4e25e8e986a7b1555034f8e1242d1b4daf6bb4d"
+          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.76/xtream-0.2.76-darwin-arm64",
+          "checksum": "423909ce4425fbf868ed0c5ea5deacc8162e1511c7bfde820d5b28689ff973ba"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.75/xtream-0.2.75-linux-amd64",
-          "checksum": "22792a76961304c3d526dc534679251422aa6db306b017b9d8eb4bb480718e3a"
+          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.76/xtream-0.2.76-linux-amd64",
+          "checksum": "5ae95e02e58839abd295658b03e2ac821be58587e5c31f346874e6df7cefcbec"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.75/xtream-0.2.75-linux-arm64",
-          "checksum": "d6eb325cc4e79e91f51cba079606c1e431c23492646d3c37f20578b49f91bfa3"
+          "url": "https://github.com/theramindex/silo-plugin-xtream-library/releases/download/v0.2.76/xtream-0.2.76-linux-arm64",
+          "checksum": "2642c69b4f1196c591ec8ff72465f1b6f1d2cf9183e69fd2943bab32e1f77f32"
         }
       }
     }
