@@ -25,6 +25,11 @@ const version = required("version").replace(/^v/, "");
 const prefix = required("asset-prefix");
 const pluginId = required("plugin-id");
 const repo = required("repo");
+if (repo.includes("/")) {
+  // URLs are built as theramindex/<repo>; an owner here doubles it and 404s.
+  console.error(`--repo takes the repo name only (e.g. silo-plugin-xtream-library), got ${repo}`);
+  process.exit(1);
+}
 
 const release = new Map(
   readFileSync(required("checksums"), "utf8")

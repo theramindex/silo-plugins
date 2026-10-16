@@ -26,7 +26,7 @@ Download `checksums.txt` and the three binaries (darwin-arm64, linux-amd64, linu
 For every other plugin, run:
 
 ```bash
-node scripts/update-entry.mjs --plugin-id <catalog plugin id> --repo <plugin repo> \
+node scripts/update-entry.mjs --plugin-id <catalog plugin id> --repo <plugin repo name, without theramindex/> \
   --version <version> --asset-prefix <prefix> --checksums <downloaded checksums.txt> [--replace-old]
 ```
 
