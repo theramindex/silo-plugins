@@ -27,6 +27,13 @@ const catalogDisplayNotes = new Map([
     },
   ],
   [
+    "silo.ramindex.trakt",
+    {
+      displayName: "Trakt",
+      description: "Two-way watch history, resume progress, favorites, watchlist, movie and show ratings, and dropped shows, plus live scrobbling, for Trakt accounts.",
+    },
+  ],
+  [
     "silo.ramindex.xtream",
     {
       displayName: "XC for Silo",

@@ -9,6 +9,11 @@
 // presentation text (enforced by validate-catalog.mjs), so nothing is copied from
 // the plugin's manifest. --replace-old drops older checksums.txt lines for the
 // same asset family; leave it off to keep history (as for xtream-*).
+//
+// --plugin-manifest <path> names the plugin's manifest.json. With it, a plugin the
+// catalog does not list yet gets a new entry built from that manifest (its
+// presentation left out), and --sync-manifest also copies the platforms,
+// capabilities, presentation and metadata into an existing entry (Dispatcharr).
 import { readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 
@@ -42,8 +47,32 @@ const release = new Map(
 );
 
 const index = JSON.parse(readFileSync(manifestPath, "utf8"));
-const entry = index.plugins.find((plugin) => plugin.manifest?.plugin_id === pluginId);
-if (!entry) fail(`catalog does not contain ${pluginId}`);
+const pluginManifest = args["plugin-manifest"] ? JSON.parse(readFileSync(args["plugin-manifest"], "utf8")) : null;
+if (pluginManifest && pluginManifest.plugin_id !== pluginId) {
+  fail(`${args["plugin-manifest"]} is ${pluginManifest.plugin_id}, not ${pluginId}`);
+}
+let entry = index.plugins.find((plugin) => plugin.manifest?.plugin_id === pluginId);
+if (!entry) {
+  if (!pluginManifest) fail(`catalog does not contain ${pluginId}; pass --plugin-manifest to add it`);
+  entry = {
+    manifest: {
+      plugin_id: pluginId,
+      version,
+      silo_api_version: pluginManifest.silo_api_version,
+      supported_platforms: pluginManifest.supported_platforms,
+      capabilities: pluginManifest.capabilities,
+      ...(pluginManifest.category ? { category: pluginManifest.category } : {}),
+    },
+    repo_url: `https://github.com/theramindex/${repo}`,
+    binaries: {},
+  };
+  index.plugins.push(entry);
+} else if (pluginManifest && args["sync-manifest"]) {
+  for (const key of ["silo_api_version", "supported_platforms", "capabilities", "presentation", "metadata", "category"]) {
+    if (pluginManifest[key] === undefined) delete entry.manifest[key];
+    else entry.manifest[key] = pluginManifest[key];
+  }
+}
 
 const base = `https://github.com/theramindex/${repo}/releases/download/v${version}`;
 const newLines = new Map();

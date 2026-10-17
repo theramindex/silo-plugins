@@ -1,0 +1,183 @@
+name: Release plugin
+
+# Called by each plugin repo's "Release" workflow (Actions tab -> Release -> Run
+# workflow). Bumps manifest.json on main, runs the plugin's checks, then commits,
+# tags and pushes as the ramindex-ci GitHub App. The tag push starts the plugin's
+# tag build, which publishes the release and calls publish-plugin.yml.
+#
+# Templates in commit-message, tag-message, release-notes and verify take
+# {version} and {summary}. Every input reaches the shell through env, never
+# through ${{ }} inside a script.
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: Version without a leading v. Blank releases the manifest's version if it has no tag yet, otherwise the next patch.
+        type: string
+        default: ""
+      summary:
+        description: Short change summary for commit messages that use {summary}.
+        type: string
+        default: ""
+      commit-message:
+        type: string
+        required: true
+      tag-message:
+        description: Set to make an annotated tag with this message.
+        type: string
+        default: ""
+      release-notes:
+        description: Path that must exist before releasing, e.g. docs/releases/v{version}.md.
+        type: string
+        default: ""
+      verify:
+        description: Command run before committing.
+        type: string
+        default: go test ./...
+    secrets:
+      RAMINDEX_CI_APP_KEY:
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require main
+        if: github.ref != 'refs/heads/main'
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          echo "Run Release from main, not ${REF}." >&2
+          exit 1
+
+      - name: Get a ramindex-ci token
+        id: app
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: 5324952
+          private-key: ${{ secrets.RAMINDEX_CI_APP_KEY }}
+          owner: theramindex
+          repositories: ${{ github.event.repository.name }}
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ steps.app.outputs.token }}
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        env:
+          REQUESTED: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          current="$(node -p 'require("./manifest.json").version')"
+          requested="${REQUESTED#v}"
+          if [[ -z "${requested}" ]]; then
+            if git rev-parse -q --verify "refs/tags/v${current}" >/dev/null; then
+              IFS=. read -r major minor patch <<<"${current}"
+              requested="${major}.${minor}.$((patch + 1))"
+            else
+              requested="${current}"
+            fi
+          fi
+          if [[ ! "${requested}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Version ${requested} is not MAJOR.MINOR.PATCH." >&2
+            exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/v${requested}" >/dev/null; then
+            echo "Tag v${requested} already exists." >&2
+            exit 1
+          fi
+          if [[ "${requested}" != "${current}" && "$(printf '%s\n%s\n' "${current}" "${requested}" | sort -V | tail -1)" != "${requested}" ]]; then
+            echo "Version ${requested} is older than the manifest's ${current}." >&2
+            exit 1
+          fi
+          echo "current=${current}" >> "$GITHUB_OUTPUT"
+          echo "version=${requested}" >> "$GITHUB_OUTPUT"
+          echo "Releasing ${requested} (manifest has ${current})."
+
+      - name: Bump manifest.json
+        if: steps.version.outputs.version != steps.version.outputs.current
+        shell: bash
+        env:
+          CURRENT: ${{ steps.version.outputs.current }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          # Edit only the version line so the rest of the file keeps its formatting.
+          node -e '
+            const fs = require("fs");
+            const [current, next] = process.argv.slice(1);
+            const text = fs.readFileSync("manifest.json", "utf8");
+            const line = `"version": "${current}"`;
+            if (!text.includes(line)) throw new Error(`manifest.json has no ${line}`);
+            fs.writeFileSync("manifest.json", text.replace(line, `"version": "${next}"`));
+          ' "${CURRENT}" "${VERSION}"
+          test "$(node -p 'require("./manifest.json").version')" = "${VERSION}"
+
+      - name: Check release notes
+        if: inputs.release-notes != ''
+        shell: bash
+        env:
+          TEMPLATE: ${{ inputs.release-notes }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          notes="${TEMPLATE//\{version\}/${VERSION}}"
+          if [[ ! -s "${notes}" ]]; then
+            echo "Write ${notes} on main before releasing ${VERSION}." >&2
+            exit 1
+          fi
+
+      - name: Verify
+        shell: bash
+        env:
+          TEMPLATE: ${{ inputs.verify }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          command="${TEMPLATE//\{version\}/${VERSION}}"
+          echo "+ ${command}"
+          bash -euo pipefail -c "${command}"
+
+      - name: Commit, tag and push as ramindex-ci
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          SUMMARY: ${{ inputs.summary }}
+          COMMIT_TEMPLATE: ${{ inputs.commit-message }}
+          TAG_TEMPLATE: ${{ inputs.tag-message }}
+        run: |
+          set -euo pipefail
+          fill() { local text="${1//\{version\}/${VERSION}}"; text="${text//\{summary\}/${SUMMARY}}"; printf '%s' "${text}"; }
+          git config user.name ramindex-ci
+          git config user.email github@ramindex.org
+          if ! git diff --quiet; then
+            git add manifest.json
+            git commit -m "$(fill "${COMMIT_TEMPLATE}")"
+          fi
+          if [[ -n "${TAG_TEMPLATE}" ]]; then
+            git tag -a "v${VERSION}" -m "$(fill "${TAG_TEMPLATE}")"
+          else
+            git tag "v${VERSION}"
+          fi
+          git push --atomic origin HEAD:refs/heads/main "refs/tags/v${VERSION}"
+          echo "Pushed v${VERSION}; the tag build publishes the release and updates the catalog." >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,157 @@
+name: Publish plugin to the catalog
+
+# Called as the last job of a plugin's tag build, after its GitHub release is
+# published. Checks the release binaries against its checksums.txt, points the
+# catalog entry at the release with scripts/update-entry.mjs (which runs the
+# validator), and pushes the catalog as the ramindex-ci GitHub App.
+#
+# Templates in asset-prefix take {version}. Every input reaches the shell through
+# env, never through ${{ }} inside a script.
+
+on:
+  workflow_call:
+    inputs:
+      plugin-id:
+        type: string
+        required: true
+      display-name:
+        description: Name used in the catalog commit, "Update <display-name> to <version>".
+        type: string
+        required: true
+      asset-prefix:
+        description: Release asset name before <os>-<arch>, e.g. trakt-{version}-.
+        type: string
+        required: true
+      replace-old:
+        description: Drop older checksums.txt lines for this asset family.
+        type: boolean
+        default: true
+      sync-manifest:
+        description: Also copy platforms, capabilities, presentation, metadata and category from the plugin's manifest.
+        type: boolean
+        default: false
+    secrets:
+      RAMINDEX_CI_APP_KEY:
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: theramindex-silo-plugins-catalog
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require a version tag
+        if: github.ref_type != 'tag' || !startsWith(github.ref_name, 'v')
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          echo "Publish runs for v* tags, not ${REF}." >&2
+          exit 1
+
+      - name: Resolve release
+        id: release
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+          PREFIX_TEMPLATE: ${{ inputs.asset-prefix }}
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "prefix=${PREFIX_TEMPLATE//\{version\}/${version}}" >> "$GITHUB_OUTPUT"
+
+      - name: Get a ramindex-ci token for the catalog
+        id: app
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: 5324952
+          private-key: ${{ secrets.RAMINDEX_CI_APP_KEY }}
+          owner: theramindex
+          repositories: silo-plugins
+
+      - name: Check out the plugin at the tag
+        uses: actions/checkout@v4
+        with:
+          path: plugin
+
+      - name: Check out the catalog
+        uses: actions/checkout@v4
+        with:
+          repository: theramindex/silo-plugins
+          ref: main
+          fetch-depth: 0
+          token: ${{ steps.app.outputs.token }}
+          path: catalog
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Download and check the release binaries
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+          PREFIX: ${{ steps.release.outputs.prefix }}
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          gh release download "${TAG}" --repo "${REPO}" --dir release --pattern checksums.txt \
+            --pattern "${PREFIX}darwin-arm64" --pattern "${PREFIX}linux-amd64" --pattern "${PREFIX}linux-arm64"
+          cd release
+          for platform in darwin-arm64 linux-amd64 linux-arm64; do
+            name="${PREFIX}${platform}"
+            line="$(awk -v n="${name}" '{f=$2; sub(/^\*/, "", f)} f == n' checksums.txt)"
+            if [[ -z "${line}" ]]; then
+              echo "checksums.txt has no ${name}." >&2
+              exit 1
+            fi
+            printf '%s\n' "${line}" | sha256sum -c -
+          done
+
+      - name: Update the catalog and push as ramindex-ci
+        shell: bash
+        working-directory: catalog
+        env:
+          PLUGIN_ID: ${{ inputs.plugin-id }}
+          DISPLAY_NAME: ${{ inputs.display-name }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          VERSION: ${{ steps.release.outputs.version }}
+          PREFIX: ${{ steps.release.outputs.prefix }}
+          REPLACE_OLD: ${{ inputs.replace-old }}
+          SYNC_MANIFEST: ${{ inputs.sync-manifest }}
+        run: |
+          set -euo pipefail
+          git config user.name ramindex-ci
+          git config user.email github@ramindex.org
+          args=(--plugin-id "${PLUGIN_ID}" --repo "${REPO_NAME}" --version "${VERSION}"
+            --asset-prefix "${PREFIX}" --checksums ../release/checksums.txt
+            --plugin-manifest ../plugin/manifest.json)
+          if [[ "${REPLACE_OLD}" == "true" ]]; then args+=(--replace-old); fi
+          if [[ "${SYNC_MANIFEST}" == "true" ]]; then args+=(--sync-manifest); fi
+          # Another plugin may push the catalog between our fetch and push; start over
+          # from the new main when that happens.
+          for attempt in 1 2 3 4 5; do
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            node scripts/update-entry.mjs "${args[@]}"
+            if git diff --quiet; then
+              echo "The catalog already lists ${PLUGIN_ID} ${VERSION}." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            git add manifest.json checksums.txt
+            git commit -q -m "Update ${DISPLAY_NAME} to ${VERSION}"
+            if git push -q origin HEAD:refs/heads/main; then
+              echo "Catalog: ${DISPLAY_NAME} ${VERSION} ($(git rev-parse --short HEAD))." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep $((attempt * 5))
+          done
+          echo "Could not push the catalog after 5 attempts." >&2
+          exit 1
