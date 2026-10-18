@@ -262,6 +262,83 @@
           "checksum": "05720e288f23deef355b7023645043ea671ce2623c01fb51c985e04dca54b366"
         }
       }
+    },
+    {
+      "manifest": {
+        "plugin_id": "silo.ramindex.trakt",
+        "version": "0.3.0",
+        "silo_api_version": "v1",
+        "supported_platforms": [
+          {
+            "os": "darwin",
+            "arch": "arm64"
+          },
+          {
+            "os": "linux",
+            "arch": "amd64"
+          },
+          {
+            "os": "linux",
+            "arch": "arm64"
+          }
+        ],
+        "capabilities": [
+          {
+            "type": "watch_sync_provider.v1",
+            "id": "trakt",
+            "display_name": "Trakt",
+            "description": "Two-way watch history, resume progress, favorites, watchlist, movie and show ratings, and dropped shows, plus live scrobbling, for Trakt accounts.",
+            "watch_sync_provider": {
+              "auth_methods": [
+                "WATCH_SYNC_AUTH_METHOD_DEVICE_CODE"
+              ],
+              "export_watched": true,
+              "export_unwatched": true,
+              "import_watched": true,
+              "import_progress": true,
+              "import_favorites": true,
+              "export_favorites": true,
+              "remove_favorites": true,
+              "import_watchlist": true,
+              "export_watchlist": true,
+              "remove_watchlist": true,
+              "scrobble_playback": true,
+              "import_ratings": true,
+              "export_ratings": true,
+              "sync_dropped": true,
+              "supported_media_types": [
+                "WATCH_SYNC_MEDIA_TYPE_MOVIE",
+                "WATCH_SYNC_MEDIA_TYPE_EPISODE",
+                "WATCH_SYNC_MEDIA_TYPE_SERIES"
+              ],
+              "external_id_namespaces": [
+                "imdb",
+                "tmdb",
+                "tvdb"
+              ],
+              "max_batch_size": 100
+            }
+          }
+        ],
+        "category": "Watch Providers",
+        "checksum": "c481128b092db2de1e2a18186b6bf649f5e0db6f91f3c24ac9ef9ccb51207953"
+      },
+      "repo_url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt",
+      "binaries": {
+        "darwin/arm64": {
+          "url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.0/trakt-0.3.0-darwin-arm64",
+          "checksum": "08ab3ba8781a1e9d31351a7cc0ca3b9cd02fc567a50a91ad6bdf7e49350b48b2"
+        },
+        "linux/amd64": {
+          "url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.0/trakt-0.3.0-linux-amd64",
+          "checksum": "c481128b092db2de1e2a18186b6bf649f5e0db6f91f3c24ac9ef9ccb51207953"
+        },
+        "linux/arm64": {
+          "url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.0/trakt-0.3.0-linux-arm64",
+          "checksum": "5cd7b6840ca3cd231c12b41216867d70df9b8f12dd5318f76fc6ab93f27361cd"
+        }
+      },
+      "checksums_url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.0/checksums.txt"
     }
   ]
 }
