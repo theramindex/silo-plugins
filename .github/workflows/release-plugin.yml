@@ -1,34 +1,44 @@
 name: Release plugin
 
-# Called by each plugin repo's "Release" workflow (Actions tab -> Release -> Run
-# workflow). Bumps manifest.json on main, runs the plugin's checks, then commits,
-# tags and pushes as the ramindex-ci GitHub App. The tag push starts the plugin's
-# tag build, which publishes the release and calls publish-plugin.yml.
+# Called by each plugin repo's "Release" workflow on every push to main, and from
+# Actions tab -> Release -> Run workflow. The plan job reads the Conventional
+# Commits (https://www.conventionalcommits.org) since the last v* tag and picks
+# the next version; the release job bumps manifest.json, runs the plugin's
+# checks, then commits, tags and pushes as the ramindex-ci GitHub App. The tag
+# push starts the plugin's tag build, which publishes the release and calls
+# publish-plugin.yml.
+#
+# Bumps: a breaking change (type! or a BREAKING CHANGE: footer) is major, or
+# minor while the major version is 0; feat is minor; fix, perf and revert are
+# patch. Other types (chore, docs, ci, test, refactor, build, style) release
+# nothing on their own, which is also why the release commit itself
+# ("chore(release): ...") never starts another release.
 #
 # Templates in commit-message, tag-message, release-notes and verify take
-# {version} and {summary}. Every input reaches the shell through env, never
-# through ${{ }} inside a script.
+# {version}. Every input reaches the shell through env, never through ${{ }}
+# inside a script.
 
 on:
   workflow_call:
     inputs:
+      auto:
+        description: Called from a push. Release only when a commit since the last tag is feat, fix, perf, revert or breaking.
+        type: boolean
+        default: false
       version:
-        description: Version without a leading v. Blank releases the manifest's version if it has no tag yet, otherwise the next patch.
-        type: string
-        default: ""
-      summary:
-        description: Short change summary for commit messages that use {summary}.
+        description: Version without a leading v. Blank picks it from the commits (at least a patch), or releases the manifest's version if it has no tag yet.
         type: string
         default: ""
       commit-message:
+        description: Must start with chore(release) so the push does not release again.
         type: string
-        required: true
+        default: "chore(release): {version}"
       tag-message:
-        description: Set to make an annotated tag with this message.
+        description: First line of the annotated tag; the release notes follow it.
         type: string
-        default: ""
+        default: "v{version}"
       release-notes:
-        description: Path that must exist before releasing, e.g. docs/releases/v{version}.md.
+        description: Path for the notes in the repo, e.g. docs/releases/v{version}.md. Used as is when it exists, written from the commits when it does not.
         type: string
         default: ""
       verify:
@@ -42,13 +52,14 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: release-${{ github.repository }}
-  cancel-in-progress: false
-
 jobs:
-  release:
+  plan:
     runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.plan.outputs.release }}
+      current: ${{ steps.plan.outputs.current }}
+      version: ${{ steps.plan.outputs.version }}
+      notes: ${{ steps.plan.outputs.notes }}
     steps:
       - name: Require main
         if: github.ref != 'refs/heads/main'
@@ -58,6 +69,99 @@ jobs:
           echo "Run Release from main, not ${REF}." >&2
           exit 1
 
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Plan the release from the commits
+        id: plan
+        env:
+          AUTO: ${{ inputs.auto }}
+          REQUESTED: ${{ inputs.version }}
+        run: |
+          node <<'EOF'
+          const { execFileSync } = require("child_process");
+          const fs = require("fs");
+          const git = (...args) => execFileSync("git", args, { encoding: "utf8" }).trim();
+          const hasTag = (tag) => { try { git("rev-parse", "-q", "--verify", `refs/tags/${tag}`); return true; } catch { return false; } };
+          const parse = (v) => v.split(".").map(Number);
+          const newer = (a, b) => { const [x, y] = [parse(a), parse(b)]; for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] > y[i]; return false; };
+
+          const auto = process.env.AUTO === "true";
+          const current = JSON.parse(fs.readFileSync("manifest.json", "utf8")).version;
+          const requested = (process.env.REQUESTED || "").replace(/^v/, "");
+
+          let base = "";
+          try { base = git("describe", "--tags", "--abbrev=0", "--match", "v[0-9]*.[0-9]*.[0-9]*"); } catch {}
+          const log = git("log", "--no-merges", "--format=%h%x1f%B%x1e", base ? `${base}..HEAD` : "HEAD");
+
+          // 0 none, 1 patch, 2 minor, 3 breaking.
+          let bump = 0;
+          const sections = { breaking: [], feat: [], fix: [], perf: [] };
+          for (const entry of log.split("\x1e")) {
+            const [sha, message = ""] = entry.trim().split("\x1f");
+            if (!sha) continue;
+            const [header, ...rest] = message.split("\n");
+            const m = /^(\w+)(?:\(([^)]*)\))?(!)?: (.+)$/.exec(header.trim());
+            if (!m) {
+              console.log(`::warning::${sha} is not a Conventional Commit and does not count toward a release: ${header}`);
+              continue;
+            }
+            const [, type, scope, bang, description] = m;
+            const line = `- ${scope ? `**${scope}:** ` : ""}${description} (${sha})`;
+            const footer = /^BREAKING[ -]CHANGE: (.+)$/m.exec(rest.join("\n"));
+            if (bang || footer) {
+              bump = 3;
+              sections.breaking.push(footer ? `- ${footer[1]} (${sha})` : line);
+            }
+            if (type === "feat") { bump = Math.max(bump, 2); sections.feat.push(line); }
+            else if (type === "fix" || type === "revert") { bump = Math.max(bump, 1); sections.fix.push(line); }
+            else if (type === "perf") { bump = Math.max(bump, 1); sections.perf.push(line); }
+          }
+
+          let release = true;
+          let version;
+          if (requested) {
+            version = requested;
+          } else if (!hasTag(`v${current}`)) {
+            // A commit set the manifest's version by hand; release that version.
+            version = current;
+            release = !auto || bump > 0;
+          } else if (auto && bump === 0) {
+            release = false;
+            version = current;
+          } else {
+            const [major, minor, patch] = parse(current);
+            const level = bump === 3 && major === 0 ? 2 : Math.max(bump, 1);
+            version = level === 3 ? `${major + 1}.0.0` : level === 2 ? `${major}.${minor + 1}.0` : `${major}.${minor}.${patch + 1}`;
+          }
+
+          if (release) {
+            if (!/^\d+\.\d+\.\d+$/.test(version)) throw new Error(`Version ${version} is not MAJOR.MINOR.PATCH.`);
+            if (hasTag(`v${version}`)) throw new Error(`Tag v${version} already exists.`);
+            if (newer(current, version)) throw new Error(`Version ${version} is older than the manifest's ${current}.`);
+          }
+
+          const titles = [["breaking", "Breaking changes"], ["feat", "Features"], ["fix", "Fixes"], ["perf", "Performance"]];
+          const notes = titles
+            .filter(([key]) => sections[key].length)
+            .map(([key, title]) => `### ${title}\n\n${sections[key].join("\n")}`)
+            .join("\n\n") || "Maintenance release.";
+
+          const delimiter = `NOTES_${Date.now()}`;
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,
+            `release=${release}\ncurrent=${current}\nversion=${version}\nnotes<<${delimiter}\n${notes}\n${delimiter}\n`);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, release
+            ? `Releasing ${version} (manifest has ${current}, last tag ${base || "none"}).\n\n${notes}\n`
+            : `Nothing to release since ${base || "the first commit"}: no feat, fix, perf, revert or breaking commits.\n`);
+          EOF
+
+  release:
+    needs: plan
+    if: needs.plan.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    steps:
       - name: Get a ramindex-ci token
         id: app
         uses: actions/create-github-app-token@v2
@@ -69,7 +173,8 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          ref: main
+          # The commit this run planned; later pushes get their own runs.
+          ref: ${{ github.sha }}
           fetch-depth: 0
           token: ${{ steps.app.outputs.token }}
 
@@ -82,45 +187,12 @@ jobs:
         with:
           node-version: 22
 
-      - name: Resolve version
-        id: version
-        shell: bash
-        env:
-          REQUESTED: ${{ inputs.version }}
-        run: |
-          set -euo pipefail
-          current="$(node -p 'require("./manifest.json").version')"
-          requested="${REQUESTED#v}"
-          if [[ -z "${requested}" ]]; then
-            if git rev-parse -q --verify "refs/tags/v${current}" >/dev/null; then
-              IFS=. read -r major minor patch <<<"${current}"
-              requested="${major}.${minor}.$((patch + 1))"
-            else
-              requested="${current}"
-            fi
-          fi
-          if [[ ! "${requested}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Version ${requested} is not MAJOR.MINOR.PATCH." >&2
-            exit 1
-          fi
-          if git rev-parse -q --verify "refs/tags/v${requested}" >/dev/null; then
-            echo "Tag v${requested} already exists." >&2
-            exit 1
-          fi
-          if [[ "${requested}" != "${current}" && "$(printf '%s\n%s\n' "${current}" "${requested}" | sort -V | tail -1)" != "${requested}" ]]; then
-            echo "Version ${requested} is older than the manifest's ${current}." >&2
-            exit 1
-          fi
-          echo "current=${current}" >> "$GITHUB_OUTPUT"
-          echo "version=${requested}" >> "$GITHUB_OUTPUT"
-          echo "Releasing ${requested} (manifest has ${current})."
-
       - name: Bump manifest.json
-        if: steps.version.outputs.version != steps.version.outputs.current
+        if: needs.plan.outputs.version != needs.plan.outputs.current
         shell: bash
         env:
-          CURRENT: ${{ steps.version.outputs.current }}
-          VERSION: ${{ steps.version.outputs.version }}
+          CURRENT: ${{ needs.plan.outputs.current }}
+          VERSION: ${{ needs.plan.outputs.version }}
         run: |
           set -euo pipefail
           # Edit only the version line so the rest of the file keeps its formatting.
@@ -134,24 +206,32 @@ jobs:
           ' "${CURRENT}" "${VERSION}"
           test "$(node -p 'require("./manifest.json").version')" = "${VERSION}"
 
-      - name: Check release notes
-        if: inputs.release-notes != ''
+      - name: Write the release notes
         shell: bash
         env:
           TEMPLATE: ${{ inputs.release-notes }}
-          VERSION: ${{ steps.version.outputs.version }}
+          VERSION: ${{ needs.plan.outputs.version }}
+          NOTES: ${{ needs.plan.outputs.notes }}
         run: |
-          notes="${TEMPLATE//\{version\}/${VERSION}}"
-          if [[ ! -s "${notes}" ]]; then
-            echo "Write ${notes} on main before releasing ${VERSION}." >&2
-            exit 1
+          set -euo pipefail
+          printf '%s\n' "${NOTES}" > "${RUNNER_TEMP}/notes.md"
+          if [[ -n "${TEMPLATE}" ]]; then
+            path="${TEMPLATE//\{version\}/${VERSION}}"
+            if [[ -s "${path}" ]]; then
+              # Notes written by hand win; drop their "# v<version>" title.
+              sed '1{/^# /d}' "${path}" | sed '/./,$!d' > "${RUNNER_TEMP}/notes.md"
+            else
+              mkdir -p "$(dirname "${path}")"
+              printf '# v%s\n\n%s\n' "${VERSION}" "${NOTES}" > "${path}"
+              git add "${path}"
+            fi
           fi
 
       - name: Verify
         shell: bash
         env:
           TEMPLATE: ${{ inputs.verify }}
-          VERSION: ${{ steps.version.outputs.version }}
+          VERSION: ${{ needs.plan.outputs.version }}
         run: |
           set -euo pipefail
           command="${TEMPLATE//\{version\}/${VERSION}}"
@@ -161,23 +241,23 @@ jobs:
       - name: Commit, tag and push as ramindex-ci
         shell: bash
         env:
-          VERSION: ${{ steps.version.outputs.version }}
-          SUMMARY: ${{ inputs.summary }}
+          VERSION: ${{ needs.plan.outputs.version }}
           COMMIT_TEMPLATE: ${{ inputs.commit-message }}
           TAG_TEMPLATE: ${{ inputs.tag-message }}
         run: |
           set -euo pipefail
-          fill() { local text="${1//\{version\}/${VERSION}}"; text="${text//\{summary\}/${SUMMARY}}"; printf '%s' "${text}"; }
+          fill() { printf '%s' "${1//\{version\}/${VERSION}}"; }
           git config user.name ramindex-ci
           git config user.email github@ramindex.org
-          if ! git diff --quiet; then
-            git add manifest.json
-            git commit -m "$(fill "${COMMIT_TEMPLATE}")"
+          git add manifest.json
+          if ! git diff --cached --quiet; then
+            git commit -q -m "$(fill "${COMMIT_TEMPLATE}")"
           fi
-          if [[ -n "${TAG_TEMPLATE}" ]]; then
-            git tag -a "v${VERSION}" -m "$(fill "${TAG_TEMPLATE}")"
-          else
-            git tag "v${VERSION}"
+          { fill "${TAG_TEMPLATE}"; printf '\n\n'; cat "${RUNNER_TEMP}/notes.md"; } > "${RUNNER_TEMP}/tag.txt"
+          # verbatim keeps the notes' "### " headings, which the default cleanup strips.
+          git tag -a "v${VERSION}" --cleanup=verbatim -F "${RUNNER_TEMP}/tag.txt"
+          if ! git push --atomic origin HEAD:refs/heads/main "refs/tags/v${VERSION}"; then
+            echo "main moved while releasing; nothing was pushed. The run for the newer push releases its commits too." >&2
+            exit 1
           fi
-          git push --atomic origin HEAD:refs/heads/main "refs/tags/v${VERSION}"
           echo "Pushed v${VERSION}; the tag build publishes the release and updates the catalog." >> "$GITHUB_STEP_SUMMARY"

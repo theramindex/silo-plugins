@@ -1,8 +1,9 @@
 name: Publish plugin to the catalog
 
 # Called as the last job of a plugin's tag build, after its GitHub release is
-# published. Checks the release binaries against its checksums.txt, points the
-# catalog entry at the release with scripts/update-entry.mjs (which runs the
+# published. Checks the release binaries against its checksums.txt, copies the
+# annotated tag's notes (written by release-plugin.yml) into the release, points
+# the catalog entry at the release with scripts/update-entry.mjs (which runs the
 # validator), and pushes the catalog as the ramindex-ci GitHub App.
 #
 # Templates in asset-prefix take {version}. Every input reaches the shell through
@@ -15,7 +16,7 @@ on:
         type: string
         required: true
       display-name:
-        description: Name used in the catalog commit, "Update <display-name> to <version>".
+        description: 'Name used in the catalog commit, "chore(catalog): update <display-name> to <version>".'
         type: string
         required: true
       asset-prefix:
@@ -74,6 +75,15 @@ jobs:
           owner: theramindex
           repositories: silo-plugins
 
+      - name: Get a ramindex-ci token for the plugin
+        id: plugin-app
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: 5324952
+          private-key: ${{ secrets.RAMINDEX_CI_APP_KEY }}
+          owner: theramindex
+          repositories: ${{ github.event.repository.name }}
+
       - name: Check out the plugin at the tag
         uses: actions/checkout@v4
         with:
@@ -115,6 +125,26 @@ jobs:
             printf '%s\n' "${line}" | sha256sum -c -
           done
 
+      - name: Use the tag's notes for the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ steps.plugin-app.outputs.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          ref="$(gh api "repos/${REPO}/git/ref/tags/${TAG}")"
+          if [[ "$(jq -r .object.type <<<"${ref}")" != "tag" ]]; then
+            echo "${TAG} is a lightweight tag; keeping the release's notes."
+            exit 0
+          fi
+          # The tag message is its title line, a blank line, then the notes.
+          gh api "repos/${REPO}/git/tags/$(jq -r .object.sha <<<"${ref}")" --jq .message \
+            | sed '1d' | sed '/./,$!d' > notes.md
+          if [[ -s notes.md ]]; then
+            gh release edit "${TAG}" --repo "${REPO}" --notes-file notes.md
+          fi
+
       - name: Update the catalog and push as ramindex-ci
         shell: bash
         working-directory: catalog
@@ -146,7 +176,7 @@ jobs:
               exit 0
             fi
             git add manifest.json checksums.txt
-            git commit -q -m "Update ${DISPLAY_NAME} to ${VERSION}"
+            git commit -q -m "chore(catalog): update ${DISPLAY_NAME} to ${VERSION}"
             if git push -q origin HEAD:refs/heads/main; then
               echo "Catalog: ${DISPLAY_NAME} ${VERSION} ($(git rev-parse --short HEAD))." >> "$GITHUB_STEP_SUMMARY"
               exit 0
