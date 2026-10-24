@@ -1,12 +1,27 @@
 package catalog
 
 import (
+	"encoding/json"
+	"os"
 	"strings"
 	"testing"
 
 	pluginv1 "github.com/Silo-Server/silo-plugin-sdk/pkg/pluginproto/silo/plugin/v1"
 	"github.com/Silo-Server/silo-plugin-sdk/pkg/pluginsdk/capability"
 )
+
+func TestPublishedRepositoryIndexDecodesForSilo(t *testing.T) {
+	data, err := os.ReadFile("../manifest.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Silo reads catalog indexes with encoding/json, while standalone source
+	// manifests use protojson. Protobuf enum names only work in the latter.
+	var index RepositoryIndex
+	if err := json.Unmarshal(data, &index); err != nil {
+		t.Fatalf("published catalog must decode with Silo's JSON reader: %v", err)
+	}
+}
 
 func TestBuildPackageFromRelease_MinimalManifestAndAssets(t *testing.T) {
 	source := &pluginv1.PluginManifest{

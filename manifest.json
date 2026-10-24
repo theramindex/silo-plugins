@@ -290,7 +290,7 @@
             "description": "Two-way watch history, resume progress, favorites, watchlist, movie and show ratings, and dropped shows, plus live scrobbling, for Trakt accounts.",
             "watch_sync_provider": {
               "auth_methods": [
-                "WATCH_SYNC_AUTH_METHOD_DEVICE_CODE"
+                3
               ],
               "export_watched": true,
               "export_unwatched": true,
