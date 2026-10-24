@@ -307,9 +307,9 @@
               "export_ratings": true,
               "sync_dropped": true,
               "supported_media_types": [
-                "WATCH_SYNC_MEDIA_TYPE_MOVIE",
-                "WATCH_SYNC_MEDIA_TYPE_EPISODE",
-                "WATCH_SYNC_MEDIA_TYPE_SERIES"
+                1,
+                2,
+                3
               ],
               "external_id_namespaces": [
                 "imdb",
