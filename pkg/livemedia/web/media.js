@@ -48,7 +48,7 @@ window.SiloLiveMedia = class {
       video.onerror=()=>{if(video.error)fatal({code:video.error.code})};video.onplaying=()=>status('');video.onended=()=>{if(active()){this.stop();this.options.onStatus?.('Playback ended.')}};
       const hls=mode!=='direct'||session.container==='hls';
       if(hls&&window.Hls?.isSupported()) {
-        this.hls=new Hls({backBufferLength:60,maxBufferLength:30,liveSyncDuration:6,liveMaxLatencyDuration:rewind||mode==='rewind'?Infinity:18,xhrSetup:(xhr,url)=>{if(new URL(url,location.href).origin!==location.origin)throw new Error('Unapproved media origin');for(const[k,v]of Object.entries(this.options.headers()))xhr.setRequestHeader(k,v);xhr.withCredentials=true;}});
+        this.hls=new Hls({backBufferLength:60,maxBufferLength:30,liveSyncDuration:6,liveMaxLatencyDuration:rewind||mode==='rewind'?Infinity:18,...(mode==='direct'?this.options.hlsOptions||{}:{}),xhrSetup:(xhr,url)=>{if(new URL(url,location.href).origin!==location.origin)throw new Error('Unapproved media origin');for(const[k,v]of Object.entries(this.options.headers()))xhr.setRequestHeader(k,v);xhr.withCredentials=true;}});
         this.hls.on(Hls.Events.ERROR,(_,data)=>{if(data?.fatal)fatal(data)});this.hls.loadSource(url);this.hls.attachMedia(video);
       } else if(hls&&video.canPlayType('application/vnd.apple.mpegurl')) video.src=url;
       else if(window.mpegts?.isSupported()) {
