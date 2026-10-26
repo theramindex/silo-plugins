@@ -52,6 +52,10 @@ if (pluginManifest && pluginManifest.plugin_id !== pluginId) {
   fail(`${args["plugin-manifest"]} is ${pluginManifest.plugin_id}, not ${pluginId}`);
 }
 let entry = index.plugins.find((plugin) => plugin.manifest?.plugin_id === pluginId);
+if (entry && compareVersions(version, entry.manifest.version) < 0) {
+  console.log(`${pluginId}: keeping newer catalog version ${entry.manifest.version}; skipping delayed ${version} release`);
+  process.exit(0);
+}
 if (!entry) {
   if (!pluginManifest) fail(`catalog does not contain ${pluginId}; pass --plugin-manifest to add it`);
   entry = {
@@ -131,4 +135,27 @@ function escape(text) {
 function fail(message) {
   console.error(`update-entry: ${message}`);
   process.exit(1);
+}
+
+// Release builds can finish out of order. Compare SemVer precedence before
+// changing either the manifest or checksums; build metadata does not rank.
+function compareVersions(left, right) {
+  const parse = value => {
+    const match = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$/.exec(value);
+    if (!match) fail(`invalid release version ${value}`);
+    return {core:match.slice(1,4).map(BigInt),pre:match[4]?.split(".")};
+  };
+  const a=parse(left),b=parse(right);
+  for(let i=0;i<3;i++)if(a.core[i]!==b.core[i])return a.core[i]<b.core[i]?-1:1;
+  if(!a.pre||!b.pre)return a.pre? -1:b.pre?1:0;
+  for(let i=0;i<Math.max(a.pre.length,b.pre.length);i++) {
+    if(a.pre[i]===b.pre[i])continue;
+    if(a.pre[i]===undefined)return -1;
+    if(b.pre[i]===undefined)return 1;
+    const numericA=/^\d+$/.test(a.pre[i]),numericB=/^\d+$/.test(b.pre[i]);
+    if(numericA&&numericB){const x=BigInt(a.pre[i]),y=BigInt(b.pre[i]);if(x!==y)return x<y?-1:1;continue;}
+    if(numericA!==numericB)return numericA?-1:1;
+    return a.pre[i]<b.pre[i]?-1:1;
+  }
+  return 0;
 }

@@ -29,3 +29,6 @@ jobs:
 
       - name: Test shared browser playback lifecycle
         run: node --test pkg/livemedia/web/media.test.mjs
+
+      - name: Test release catalog ordering
+        run: node --test scripts/update-entry.test.mjs

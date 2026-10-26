@@ -27,6 +27,8 @@ To release by hand (for example a maintenance build with no releasing commits), 
 | `silo-plugin-local-artwork` | `Local Artwork <version>` | tag and release | `plugin-` | replaced |
 | `silo-plugin-watchprovider-trakt` | `Trakt <version>` | tag and release | `trakt-<version>-` | replaced |
 
+A delayed older tag build cannot downgrade a newer catalog entry: the publisher compares release versions before changing the manifest or checksums.
+
 Check the run's summary for the planned version, the notes and the catalog commit. The "Validate Catalog" workflow reruns the validator on the push. A release whose push loses a race with a newer commit fails without pushing anything; the run for the newer commit, queued behind it, releases both.
 
 ## Setup the workflows need
