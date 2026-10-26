@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	sharedhttp "github.com/theramindex/silo-plugins/pkg/livemedia/httpclient"
 	"io"
 	"net/http"
 	"net/url"
@@ -368,21 +369,21 @@ func (m *Manager) ensureRoot() error {
 func (b *buffer) run(ctx context.Context) {
 	defer close(b.done)
 	if err := os.RemoveAll(b.dir); err != nil {
-		b.fail(err)
+		b.fail(sharedhttp.RedactErrorURL(err))
 		return
 	}
 	if err := os.MkdirAll(b.dir, 0o700); err != nil {
-		b.fail(err)
+		b.fail(sharedhttp.RedactErrorURL(err))
 		return
 	}
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, b.streamURL, nil)
 	if err != nil {
-		b.fail(err)
+		b.fail(sharedhttp.RedactErrorURL(err))
 		return
 	}
 	response, err := b.client.Do(request)
 	if err != nil {
-		b.fail(err)
+		b.fail(sharedhttp.RedactErrorURL(err))
 		return
 	}
 	defer response.Body.Close()

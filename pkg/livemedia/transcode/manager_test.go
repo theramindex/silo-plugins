@@ -9,7 +9,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -107,7 +109,7 @@ func TestSessionOwnershipCapacityAndCleanup(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, entry := range entries {
-		if strings.HasPrefix(entry.Name(), "silo-live-transcode-") {
+		if strings.HasPrefix(entry.Name(), "silo-live-media-") {
 			t.Fatal("conversion files leaked after close")
 		}
 	}
@@ -416,5 +418,147 @@ func TestRelayRetainsCodecAndStopsOnViewerDisconnect(t *testing.T) {
 	case <-stopped:
 	case <-time.After(time.Second):
 		t.Fatal("relay retained upstream after stop")
+	}
+}
+
+func TestRelayTriesAlternateBeforeDeliveringBytes(t *testing.T) {
+	var attempts []string
+	var attemptsMu sync.Mutex
+	source := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		attemptsMu.Lock()
+		attempts = append(attempts, r.URL.Path)
+		attemptsMu.Unlock()
+		if r.URL.Path == "/busy" {
+			http.Error(w, "busy", 503)
+			return
+		}
+		io.WriteString(w, "alternate-video")
+	}))
+	defer source.Close()
+	manager := New(Config{MaxSessions: 8, Root: t.TempDir()})
+	defer manager.Close()
+	session, err := manager.StartRelay("viewer", "station", source.URL+"/busy", http.DefaultClient, RelayOptions{Fallback: func(context.Context) (string, *http.Client, error) {
+		return source.URL + "/available", http.DefaultClient, nil
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	target, err := manager.RelayURL(session.ID, "viewer", "input")
+	if err != nil {
+		t.Fatal(err)
+	}
+	r, err := http.Get(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body, _ := io.ReadAll(r.Body)
+	r.Body.Close()
+	if r.StatusCode != 200 || string(body) != "alternate-video" {
+		t.Fatalf("alternate stream: %d %s", r.StatusCode, body)
+	}
+	attemptsMu.Lock()
+	defer attemptsMu.Unlock()
+	if len(attempts) != 2 || attempts[0] != "/busy" || attempts[1] != "/available" {
+		t.Fatalf("unexpected attempts %v", attempts)
+	}
+}
+
+func TestRelayPreservesByteRanges(t *testing.T) {
+	source := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Header.Get("Range") != "bytes=4-8" {
+			t.Error("range header was not forwarded")
+		}
+		w.Header().Set("Content-Range", "bytes 4-8/20")
+		w.Header().Set("Accept-Ranges", "bytes")
+		w.WriteHeader(206)
+		io.WriteString(w, "video")
+	}))
+	defer source.Close()
+	manager := New(Config{Root: t.TempDir(), MaxSessions: 4})
+	defer manager.Close()
+	session, err := manager.StartRelay("viewer", "station", source.URL, http.DefaultClient)
+	if err != nil {
+		t.Fatal(err)
+	}
+	target, err := manager.RelayURL(session.ID, "viewer", "input")
+	if err != nil {
+		t.Fatal(err)
+	}
+	request, _ := http.NewRequest("GET", target, nil)
+	request.Header.Set("Range", "bytes=4-8")
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer response.Body.Close()
+	data, _ := io.ReadAll(response.Body)
+	if response.StatusCode != 206 || response.Header.Get("Content-Range") != "bytes 4-8/20" || string(data) != "video" {
+		t.Fatalf("range response lost: %d %s", response.StatusCode, data)
+	}
+}
+
+func TestRelayRewritesBOMPlaylistsAndRejectsUnquotedSecretURIs(t *testing.T) {
+	source := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/vnd.apple.mpegurl")
+		if r.URL.Path == "/invalid" {
+			io.WriteString(w, "#EXTM3U\n#EXT-X-KEY:METHOD=AES-128,URI=https://provider.example/password/key\n")
+			return
+		}
+		io.WriteString(w, "\xef\xbb\xbf  \n#EXTM3U\n#EXT-X-KEY:METHOD=AES-128,URI = \"https://provider.example/password/key\"\n#EXTINF:2,\nhttps://provider.example/password/video.ts\n")
+	}))
+	defer source.Close()
+	manager := New(Config{Root: t.TempDir(), MaxSessions: 4})
+	defer manager.Close()
+	for _, path := range []string{"/valid", "/invalid"} {
+		session, err := manager.StartRelay("viewer", path, source.URL+path, http.DefaultClient)
+		if err != nil {
+			t.Fatal(err)
+		}
+		target, _ := manager.RelayURL(session.ID, "viewer", "input")
+		r, err := http.Get(target)
+		if err != nil {
+			t.Fatal(err)
+		}
+		body, _ := io.ReadAll(r.Body)
+		r.Body.Close()
+		if strings.Contains(string(body), "password") {
+			t.Fatal("provider URL escaped rewritten playlist")
+		}
+		if path == "/valid" && (r.StatusCode != 200 || !strings.Contains(string(body), "media?session_id=")) {
+			t.Fatalf("BOM playlist failed: %d %s", r.StatusCode, body)
+		}
+		if path == "/invalid" && r.StatusCode != 502 {
+			t.Fatalf("unquoted secret URI accepted: %d", r.StatusCode)
+		}
+	}
+}
+
+func TestRestartCleansDeadProcessCacheAndKeepsLiveProcessCache(t *testing.T) {
+	root := t.TempDir()
+	dead := filepath.Join(root, "silo-live-media-1073741824-dead")
+	alive := filepath.Join(root, "silo-live-media-"+strconv.Itoa(os.Getpid())+"-alive")
+	for _, dir := range []string{dead, alive} {
+		if err := os.Mkdir(dir, 0700); err != nil {
+			t.Fatal(err)
+		}
+		os.WriteFile(filepath.Join(dir, "segment.ts"), []byte("video"), 0600)
+	}
+	manager := New(Config{Root: root})
+	defer manager.Close()
+	if _, err := manager.StartRelay("viewer", "channel", "https://example.com/video.ts", http.DefaultClient); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(dead); !os.IsNotExist(err) {
+		t.Fatal("dead encoder cache survived restart")
+	}
+	if _, err := os.Stat(alive); err != nil {
+		t.Fatal("live process cache was removed", err)
+	}
+}
+
+func TestRewindHonorsConfiguredFreeDiskReserve(t *testing.T) {
+	m := fixtureManager(t, time.Minute)
+	if _, err := m.StartWithOptions("viewer", "channel", "https://example.com/live.ts", http.DefaultClient, Options{Rewind: true, MinFreeBytes: 1 << 62}); err != ErrUnavailable {
+		t.Fatalf("encoder started below configured reserve: %v", err)
 	}
 }

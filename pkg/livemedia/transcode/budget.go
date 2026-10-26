@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"syscall"
 )
 
@@ -27,4 +28,38 @@ func acquireGPU(root string) (*os.File, error) {
 		file.Close()
 	}
 	return nil, ErrCapacity
+}
+
+func diskAvailable(root string) uint64 {
+	var st syscall.Statfs_t
+	if syscall.Statfs(root, &st) != nil {
+		return 0
+	}
+	return uint64(st.Bavail) * uint64(st.Bsize)
+}
+
+func cleanStaleRoots(root string) {
+	if root == "" {
+		root = os.TempDir()
+	}
+	entries, err := os.ReadDir(root)
+	if err != nil {
+		return
+	}
+	for _, entry := range entries {
+		if !entry.IsDir() || !strings.HasPrefix(entry.Name(), "silo-live-media-") {
+			continue
+		}
+		parts := strings.Split(strings.TrimPrefix(entry.Name(), "silo-live-media-"), "-")
+		if len(parts) < 2 {
+			continue
+		}
+		pid, err := strconv.Atoi(parts[0])
+		if err != nil || pid <= 0 {
+			continue
+		}
+		if syscall.Kill(pid, 0) == syscall.ESRCH {
+			os.RemoveAll(filepath.Join(root, entry.Name()))
+		}
+	}
 }

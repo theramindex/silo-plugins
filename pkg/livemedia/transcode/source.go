@@ -14,7 +14,8 @@ import (
 	"time"
 )
 
-var uriAttribute = regexp.MustCompile(`URI="([^"]*)"`)
+var uriAttribute = regexp.MustCompile(`(?i)URI\s*=\s*"([^"]*)"`)
+var uriAssignment = regexp.MustCompile(`(?i)URI\s*=`)
 
 func (m *Manager) serveSource(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
@@ -26,21 +27,21 @@ func (m *Manager) serveSource(w http.ResponseWriter, r *http.Request) {
 	s := m.sessions[parts[0]]
 	var raw string
 	var client *http.Client
-	if s != nil && s.relay && parts[1] == "input" && s.rootActive {
+	if s != nil && parts[1] == "input" && s.rootActive {
 		m.mu.Unlock()
 		http.Error(w, "stream is already active", 409)
 		return
 	}
 	if s != nil {
 		client = s.client
-		if s.relay && parts[1] == "input" {
+		if parts[1] == "input" {
 			s.rootActive = true
 		}
 		raw = s.resources[parts[1]]
 		s.resourceSeen[parts[1]] = time.Now()
 	}
 	m.mu.Unlock()
-	if s != nil && s.relay && parts[1] == "input" {
+	if s != nil && parts[1] == "input" {
 		defer func() { m.mu.Lock(); s.rootActive = false; m.mu.Unlock() }()
 	}
 	if raw == "" {
@@ -59,6 +60,9 @@ func (m *Manager) serveSource(w http.ResponseWriter, r *http.Request) {
 		req, createErr := http.NewRequestWithContext(ctx, http.MethodGet, raw, nil)
 		if createErr != nil {
 			break
+		}
+		if value := r.Header.Get("Range"); value != "" {
+			req.Header.Set("Range", value)
 		}
 		response, err = client.Do(req)
 		if err == nil && response.StatusCode >= 200 && response.StatusCode < 300 {
@@ -93,18 +97,37 @@ func (m *Manager) serveSource(w http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 	reader := bufio.NewReader(response.Body)
 	prefix, _ := reader.Peek(7)
+	head := string(prefix)
+	if strings.HasPrefix(head, "\xef\xbb\xbf") || len(head) > 0 && strings.ContainsRune(" \t\r\n", rune(head[0])) {
+		prefix, _ = reader.Peek(4096)
+		head = string(prefix)
+	}
+	head = strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(head), "\ufeff"))
+	playlist := strings.HasPrefix(head, "#EXTM3U") || strings.Contains(strings.ToLower(response.Header.Get("Content-Type")), "mpegurl") || strings.HasSuffix(strings.ToLower(response.Request.URL.Path), ".m3u8")
 	initialDeadline.Stop()
-	if strings.TrimSpace(string(prefix)) != "#EXTM3U" {
+	if !playlist {
 		if s.relay && parts[1] == "input" {
 			defer m.Stop(s.id, s.owner)
 		}
 		w.Header().Set("Content-Type", "application/octet-stream")
+		for _, name := range []string{"Content-Range", "Accept-Ranges"} {
+			if value := response.Header.Get(name); value != "" {
+				w.Header().Set(name, value)
+			}
+		}
+		w.WriteHeader(response.StatusCode)
 		io.Copy(flushWriter{w}, reader)
 		return
 	}
+
 	body, err := io.ReadAll(io.LimitReader(reader, 2<<20+1))
 	if err != nil || len(body) > 2<<20 {
 		http.Error(w, "source unavailable", 502)
+		return
+	}
+	normalized := strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(string(body)), "\ufeff"))
+	if !strings.HasPrefix(normalized, "#EXTM3U") {
+		http.Error(w, "source playlist unavailable", 502)
 		return
 	}
 	base := response.Request.URL
@@ -153,10 +176,13 @@ func (m *Manager) serveSource(w http.ResponseWriter, r *http.Request) {
 		}
 		return "http://" + m.listener.Addr().String() + "/" + s.id + "/" + key
 	}
-	lines := strings.Split(string(body), "\n")
+	lines := strings.Split(normalized+"\n", "\n")
 	failed := false
 	for i, line := range lines {
 		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "#EXT-X-") && len(uriAssignment.FindAllStringIndex(line, -1)) != len(uriAttribute.FindAllStringIndex(line, -1)) {
+			failed = true
+		}
 		if line != "" && !strings.HasPrefix(line, "#") {
 			lines[i] = rewrite(line)
 			if lines[i] == "" {

@@ -47,6 +47,7 @@ type Status struct {
 }
 
 type session struct {
+	minFreeBytes            int64
 	rootActive              bool
 	release                 func()
 	releaseOnce             sync.Once
@@ -112,7 +113,13 @@ func (m *Manager) initializeLocked(gpu bool) error {
 	if m.listener != nil {
 		return nil
 	}
-	root, err := os.MkdirTemp(m.config.Root, "silo-live-transcode-")
+	if m.config.Root != "" {
+		if err := os.MkdirAll(m.config.Root, 0700); err != nil {
+			return ErrUnavailable
+		}
+	}
+	cleanStaleRoots(m.config.Root)
+	root, err := os.MkdirTemp(m.config.Root, "silo-live-media-"+strconv.Itoa(os.Getpid())+"-")
 	if err != nil {
 		return ErrUnavailable
 	}
@@ -132,8 +139,11 @@ func (m *Manager) initializeLocked(gpu bool) error {
 // A viewer can have one conversion at a time. Every start gets a new ID so
 // a stale response cannot stop a newer attempt, even on the same channel.
 type Options struct {
-	Rewind bool
-	OnStop func()
+	Rewind         bool
+	RewindSegments int
+	MinFreeBytes   int64
+	OnStop         func()
+	Fallback       func(context.Context) (string, *http.Client, error)
 }
 
 func (m *Manager) Start(owner, channel, source string, client *http.Client) (Status, error) {
@@ -174,6 +184,16 @@ func (m *Manager) StartWithOptions(owner, channel, source string, client *http.C
 	if len(m.sessions) >= m.config.MaxSessions {
 		return Status{}, ErrCapacity
 	}
+	minFree := int64(1 << 30)
+	if options.Rewind {
+		minFree = options.MinFreeBytes
+		if minFree <= 0 {
+			minFree = 2 << 30
+		}
+	}
+	if diskAvailable(m.root) < uint64(minFree) {
+		return Status{}, ErrUnavailable
+	}
 	gpu, err := acquireGPU(m.config.GPUQuotaRoot)
 	if err != nil {
 		return Status{}, err
@@ -194,7 +214,7 @@ func (m *Manager) StartWithOptions(owner, channel, source string, client *http.C
 		return Status{}, ErrUnavailable
 	}
 	ctx, cancel := context.WithCancel(context.Background())
-	s := &session{id: id, owner: owner, channel: channel, dir: dir, client: client, ctx: ctx, cancel: cancel, lastSeen: time.Now(), started: time.Now(), state: "starting", encoder: "h264_vaapi", release: options.OnStop, resources: map[string]string{"input": source}, resourceSeen: map[string]time.Time{}, done: make(chan struct{})}
+	s := &session{minFreeBytes: minFree, id: id, owner: owner, channel: channel, dir: dir, client: client, ctx: ctx, cancel: cancel, lastSeen: time.Now(), started: time.Now(), state: "starting", encoder: "h264_vaapi", release: options.OnStop, fallback: options.Fallback, resources: map[string]string{"input": source}, resourceSeen: map[string]time.Time{}, done: make(chan struct{})}
 	m.sessions[id] = s
 	input := "http://" + m.listener.Addr().String() + "/" + id + "/input"
 	args := []string{"-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-threads", "2", "-filter_threads", "2", "-vaapi_device", m.config.Device,
@@ -332,6 +352,11 @@ func (m *Manager) reap() {
 			m.mu.Lock()
 			for id, s := range m.sessions {
 				m.checkLocked(s)
+				if !s.relay && diskAvailable(m.root) < uint64(s.minFreeBytes) {
+					s.state = "failed"
+					s.failure = "Playback stopped because the server cache is low on disk space."
+					s.cancel()
+				}
 				if time.Since(s.lastSeen) > m.config.LeaseTTL {
 					m.removeLocked(id)
 				}
@@ -369,6 +394,9 @@ func (m *Manager) Close() {
 
 func hlsSegments(options Options) int {
 	if options.Rewind {
+		if options.RewindSegments >= 6 && options.RewindSegments < 900 {
+			return options.RewindSegments
+		}
 		return 900
 	}
 	return 6
@@ -436,4 +464,25 @@ func (m *Manager) RelayURL(id, owner, resource string) (string, error) {
 	}
 	s.lastSeen = time.Now()
 	return "http://" + m.listener.Addr().String() + "/" + s.id + "/" + resource, nil
+}
+
+// Stats reads only generated cache files, for explicit admin checks and the
+// controller's low-frequency aggregate cache-budget enforcement.
+func (m *Manager) Stats() (int, int64) {
+	m.mu.Lock()
+	root := m.root
+	active := len(m.sessions)
+	m.mu.Unlock()
+	var bytes int64
+	if root != "" {
+		filepath.WalkDir(root, func(path string, entry os.DirEntry, err error) error {
+			if err == nil && !entry.IsDir() {
+				if info, e := entry.Info(); e == nil {
+					bytes += info.Size()
+				}
+			}
+			return nil
+		})
+	}
+	return active, bytes
 }
