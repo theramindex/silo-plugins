@@ -6,6 +6,13 @@ const checksumsPath = new URL("../checksums.txt", import.meta.url);
 
 const catalogDisplayNotes = new Map([
   [
+    "silo.ramindex.hdhomerun",
+    {
+      displayName: "HDHomeRun for Silo",
+      description: "Live TV from physical and emulated HDHomeRun endpoints, with guide, tuner limits, and station failover. Browser playback requires the Ramindex Silo stream relay.",
+    },
+  ],
+  [
     "silo.ramindex.dispatcharr",
     {
       displayName: "Dispatcharr for Silo",
