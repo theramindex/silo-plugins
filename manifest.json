@@ -343,7 +343,7 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.hdhomerun",
-        "version": "0.3.1",
+        "version": "0.3.2",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -374,7 +374,7 @@
           }
         ],
         "category": "Video/Live TV",
-        "checksum": "899a79426940a236ea2b66a282b1c95fabd009442c75ed277d3b489c0e0fb3c2",
+        "checksum": "cabf9c08a17ee8c55c3b0aa9849d90e76a4fb4b3af05844444ed81d2d08cffe9",
         "presentation": {
           "display_name": "HDHomeRun for Silo",
           "summary": "Live TV from physical and emulated HDHomeRun tuners.",
@@ -396,19 +396,19 @@
       "repo_url": "https://github.com/theramindex/silo-plugin-hdhomerun",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-hdhomerun/releases/download/v0.3.1/hdhomerun-0.3.1-darwin-arm64",
-          "checksum": "ea5b8cf39ba471bf5788f69262de9bf756fb6bc0e0ef6e7b0168262e1a50c2c5"
+          "url": "https://github.com/theramindex/silo-plugin-hdhomerun/releases/download/v0.3.2/hdhomerun-0.3.2-darwin-arm64",
+          "checksum": "562f30b4979e6093ed3ac345177b554ca255efc357b883fde6b8972e5b8dcf91"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-hdhomerun/releases/download/v0.3.1/hdhomerun-0.3.1-linux-amd64",
-          "checksum": "899a79426940a236ea2b66a282b1c95fabd009442c75ed277d3b489c0e0fb3c2"
+          "url": "https://github.com/theramindex/silo-plugin-hdhomerun/releases/download/v0.3.2/hdhomerun-0.3.2-linux-amd64",
+          "checksum": "cabf9c08a17ee8c55c3b0aa9849d90e76a4fb4b3af05844444ed81d2d08cffe9"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-hdhomerun/releases/download/v0.3.1/hdhomerun-0.3.1-linux-arm64",
-          "checksum": "837476d96d7ad9a3fadf062bc624fce0988741c238fb0de01cc0a7867349a21f"
+          "url": "https://github.com/theramindex/silo-plugin-hdhomerun/releases/download/v0.3.2/hdhomerun-0.3.2-linux-arm64",
+          "checksum": "1089a6d226acfb0aced7a935572d196baa6521dfa9360716eba7d22916134bfb"
         }
       },
-      "checksums_url": "https://github.com/theramindex/silo-plugin-hdhomerun/releases/download/v0.3.1/checksums.txt"
+      "checksums_url": "https://github.com/theramindex/silo-plugin-hdhomerun/releases/download/v0.3.2/checksums.txt"
     }
   ]
 }
