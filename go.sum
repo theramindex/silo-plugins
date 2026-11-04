@@ -1,5 +1,5 @@
-github.com/Silo-Server/silo-plugin-sdk v0.30.0 h1:86XTAtxG8TbLXVkjHJM0ScrarQVJxKShGoBKJYbEYRY=
-github.com/Silo-Server/silo-plugin-sdk v0.30.0/go.mod h1:+r4X2TAiB9Gk22sUj1gFWUj65lll1P1/dMS+Ncvy3Y0=
+github.com/Silo-Server/silo-plugin-sdk v0.32.1 h1:DrT0yAeVHqR58RNcVpbQvh8U2H2ermv3mHokoy9m+ds=
+github.com/Silo-Server/silo-plugin-sdk v0.32.1/go.mod h1:+r4X2TAiB9Gk22sUj1gFWUj65lll1P1/dMS+Ncvy3Y0=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
 github.com/cespare/xxhash/v2 v2.3.0/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/dustin/go-humanize v1.1.0 h1:dbKTrvD0klcbBV/h4AWJdMuZogJACoMlvWIWZ5b2xWg=
