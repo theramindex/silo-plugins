@@ -146,8 +146,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.local-metadata",
-        "version": "0.2.2",
-        "checksum": "b4439a68257bbb6750c1a915a255f35fdde4044d7b202d1e07c82fc243959217",
+        "version": "0.2.3",
+        "checksum": "c103846e80fca9af95958fde92f86f14fdfc0a34a0027779f0d03abb09094be9",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -208,19 +208,19 @@
         }
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-local-artwork",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.2/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.3/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.2/plugin-darwin-arm64",
-          "checksum": "1d6493d78dd55fca53f0609e5ea405fd8b48a92a2f32dd5c9ba8f5037ac279b1"
+          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.3/plugin-darwin-arm64",
+          "checksum": "b0f35b44729843ea1c03657f609c029803908850d37573606fc6925e4b5ef2c0"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.2/plugin-linux-amd64",
-          "checksum": "b4439a68257bbb6750c1a915a255f35fdde4044d7b202d1e07c82fc243959217"
+          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.3/plugin-linux-amd64",
+          "checksum": "c103846e80fca9af95958fde92f86f14fdfc0a34a0027779f0d03abb09094be9"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.2/plugin-linux-arm64",
-          "checksum": "bb929075ae6913454b18f3e53598d59cb33894dec5cba70d5c8bb877d0f4dd84"
+          "url": "https://github.com/theramindex/silo-plugin-local-artwork/releases/download/v0.2.3/plugin-linux-arm64",
+          "checksum": "553e28ee2222c40bdff614cc5f0fb3d4e439e8da131df23da7f5fecc0ca70532"
         }
       }
     },
