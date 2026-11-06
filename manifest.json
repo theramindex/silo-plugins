@@ -292,7 +292,7 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.trakt",
-        "version": "0.3.2",
+        "version": "0.3.3",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -347,7 +347,7 @@
           }
         ],
         "category": "Watch Providers",
-        "checksum": "b646e066977df5732e8ec210284dc0cf84835fd4577e56eb7f1646489b39c168",
+        "checksum": "30c87c0931599468a7bcf1e267e3083223a6122188112c0fc2c8809b868c05f6",
         "presentation": {
           "display_name": "Trakt",
           "summary": "Sync Silo watch activity, lists, ratings, and dropped shows with Trakt.",
@@ -365,19 +365,19 @@
       "repo_url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.2/trakt-0.3.2-darwin-arm64",
-          "checksum": "3ed3814d599927671dcff7bfedb94d0bad00e00b86daa097e120cf768023b038"
+          "url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.3/trakt-0.3.3-darwin-arm64",
+          "checksum": "93c08cd6c6753684322edc65f2a768c72ffedf811018173a6674be02aab1126c"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.2/trakt-0.3.2-linux-amd64",
-          "checksum": "b646e066977df5732e8ec210284dc0cf84835fd4577e56eb7f1646489b39c168"
+          "url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.3/trakt-0.3.3-linux-amd64",
+          "checksum": "30c87c0931599468a7bcf1e267e3083223a6122188112c0fc2c8809b868c05f6"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.2/trakt-0.3.2-linux-arm64",
-          "checksum": "20d7932cff894c00c1d7eb7d47e4d8b68a31368276c6453009d2eaac1c5552de"
+          "url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.3/trakt-0.3.3-linux-arm64",
+          "checksum": "d49f58f67d58a8920289271c67841ad613a87ea1cd9783cc35e52e2dc7dcae22"
         }
       },
-      "checksums_url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.2/checksums.txt"
+      "checksums_url": "https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/download/v0.3.3/checksums.txt"
     },
     {
       "manifest": {
