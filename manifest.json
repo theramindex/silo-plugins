@@ -87,8 +87,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.app-links",
-        "version": "0.1.4",
-        "checksum": "4ad8d169d18de9e3803282b88f4e050ff177dfe8172a8bf3227b83afd73f61d2",
+        "version": "0.1.5",
+        "checksum": "124973845c7846758b76c3144722d7a146a6db4fc598a08657c7d010dadc7658",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -127,19 +127,19 @@
         }
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-app-links",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.4/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.5/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.4/app-links-0.1.4-darwin-arm64",
-          "checksum": "e0e20c91d2a581e16dae31a04d14d36c0ab5d17c34dde6fd918b0551a53945a9"
+          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.5/app-links-0.1.5-darwin-arm64",
+          "checksum": "2ca45c4a81f919f045a304c2f27640d1d8ce8e47b74ffcd04e6e945ebfde6b2c"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.4/app-links-0.1.4-linux-amd64",
-          "checksum": "4ad8d169d18de9e3803282b88f4e050ff177dfe8172a8bf3227b83afd73f61d2"
+          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.5/app-links-0.1.5-linux-amd64",
+          "checksum": "124973845c7846758b76c3144722d7a146a6db4fc598a08657c7d010dadc7658"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.4/app-links-0.1.4-linux-arm64",
-          "checksum": "77283da9fb0af93cfdbe1afb0140f875f6fa1195c1d8f0579766e37933901f70"
+          "url": "https://github.com/theramindex/silo-plugin-app-links/releases/download/v0.1.5/app-links-0.1.5-linux-arm64",
+          "checksum": "3d7634b3e7e51193dbcf1f7929482c03e45a429fbaebe3c27602c2b53e1d9724"
         }
       }
     },
