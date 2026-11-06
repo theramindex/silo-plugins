@@ -5,7 +5,65 @@ import (
 	"net/http/httptest"
 	"sync/atomic"
 	"testing"
+	"time"
 )
+
+func TestViewerClearSerializesAdmissionAndReleasesReservations(t *testing.T) {
+	source := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.(http.Flusher).Flush()
+		<-r.Context().Done()
+	}))
+	defer source.Close()
+	manager := NewViewerManager(t.TempDir())
+	defer manager.Close()
+	config := Config{Enabled: true, MinFreeBytes: 1}
+	releasing, proceed := make(chan struct{}), make(chan struct{})
+	var oldReleases, freshReleases atomic.Int32
+	_, err := manager.Acquire("old", source.URL, "viewer", config, http.DefaultClient, func() {
+		oldReleases.Add(1)
+		close(releasing)
+		<-proceed
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	cleared := make(chan error, 1)
+	go func() { cleared <- manager.Clear() }()
+	<-releasing
+	type result struct {
+		lease Lease
+		err   error
+	}
+	admitted := make(chan result, 1)
+	go func() {
+		lease, err := manager.Acquire("fresh", source.URL, "viewer", config, http.DefaultClient, func() { freshReleases.Add(1) })
+		admitted <- result{lease, err}
+	}()
+	var fresh result
+	select {
+	case fresh = <-admitted:
+	case <-time.After(100 * time.Millisecond):
+	}
+	close(proceed)
+	if err := <-cleared; err != nil {
+		t.Fatal(err)
+	}
+	if fresh.lease.ID == "" {
+		fresh = <-admitted
+	}
+	if fresh.err != nil {
+		t.Fatal(fresh.err)
+	}
+	if !manager.Heartbeat(fresh.lease.ID, "viewer") {
+		t.Fatal("Clear orphaned a successful concurrent viewer admission")
+	}
+	manager.Release(fresh.lease.ID, "viewer")
+	manager.Release(fresh.lease.ID, "viewer")
+	if oldReleases.Load() != 1 || freshReleases.Load() != 1 {
+		t.Fatalf("reservation releases: old=%d fresh=%d", oldReleases.Load(), freshReleases.Load())
+	}
+}
 
 func TestViewerLeaseCannotBeAdoptedAndReleasesReservation(t *testing.T) {
 	source := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

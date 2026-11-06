@@ -2,12 +2,99 @@ package rewind
 
 import (
 	"bytes"
+	"context"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
 )
+
+type rewindRoundTripFunc func(*http.Request) (*http.Response, error)
+
+func (f rewindRoundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+
+type gatedRewindBody struct {
+	started chan context.Context
+	ctx     context.Context
+	release <-chan struct{}
+}
+
+func (b *gatedRewindBody) Read([]byte) (int, error) {
+	b.started <- b.ctx
+	<-b.release
+	return 0, io.EOF
+}
+func (*gatedRewindBody) Close() error { return nil }
+
+func TestManagerClearCannotDeleteConcurrentAdmission(t *testing.T) {
+	t.Parallel()
+	stream := bytes.Join([][]byte{testPATPacket(), testPMTPacket(), testVideoPacket(0), testFillerPacket(), testVideoPacket(180000), testFillerPacket(), testVideoPacket(360000)}, nil)
+	upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write(stream)
+		w.(http.Flusher).Flush()
+		<-r.Context().Done()
+	}))
+	defer upstream.Close()
+	manager := NewManager(t.TempDir())
+	defer manager.Close()
+	config := Config{Enabled: true, MaxBytes: 32 << 20, MinFreeBytes: 1, MaxBuffers: 2}
+	release := make(chan struct{})
+	started := make(chan context.Context, 1)
+	client := &http.Client{Transport: rewindRoundTripFunc(func(r *http.Request) (*http.Response, error) {
+		return &http.Response{StatusCode: 200, Body: &gatedRewindBody{started: started, ctx: r.Context(), release: release}, Header: http.Header{}}, nil
+	})}
+	if _, err := manager.Acquire("old", "http://old.invalid", config, client); err != nil {
+		t.Fatal(err)
+	}
+	oldContext := <-started
+	cleared := make(chan error, 1)
+	go func() { cleared <- manager.Clear() }()
+	<-oldContext.Done() // Clear is now waiting for the old ingest to finish.
+	type result struct {
+		lease Lease
+		err   error
+	}
+	admitted := make(chan result, 1)
+	go func() { lease, err := manager.Acquire("fresh", upstream.URL, config); admitted <- result{lease, err} }()
+	var fresh result
+	select {
+	case fresh = <-admitted:
+		// Baseline admits while Clear waits. Let that generation write real files.
+		deadline := time.Now().Add(3 * time.Second)
+		for {
+			status, _ := manager.Status(fresh.lease.ID)
+			if status.SegmentCount > 0 || time.Now().After(deadline) {
+				break
+			}
+			time.Sleep(time.Millisecond)
+		}
+	case <-time.After(100 * time.Millisecond):
+		// Serialized admission waits until the previous generation is cleared.
+	}
+	close(release)
+	if err := <-cleared; err != nil {
+		t.Fatal(err)
+	}
+	if fresh.lease.ID == "" {
+		fresh = <-admitted
+	}
+	if fresh.err != nil {
+		t.Fatal(fresh.err)
+	}
+	deadline := time.Now().Add(3 * time.Second)
+	for {
+		if _, ok := manager.Segment(fresh.lease.BufferID, fresh.lease.ID, 0); ok {
+			break
+		}
+		status, _ := manager.Status(fresh.lease.ID)
+		if status.State == "failed" || time.Now().After(deadline) {
+			t.Fatalf("successful admission has no readable segment after Clear: %+v", status)
+		}
+		time.Sleep(time.Millisecond)
+	}
+}
 
 func TestManagerSharesOneChannelBufferAcrossLeases(t *testing.T) {
 	t.Parallel()

@@ -19,11 +19,13 @@ type viewerLease struct {
 // ViewerManager binds buffer capabilities to the authenticated viewer and
 // retires upstream reservations when viewers stop or their heartbeats expire.
 type ViewerManager struct {
-	buffers *Manager
-	mu      sync.Mutex
-	leases  map[string]viewerLease
-	stop    chan struct{}
-	once    sync.Once
+	lifecycle sync.Mutex
+	closed    bool
+	buffers   *Manager
+	mu        sync.Mutex
+	leases    map[string]viewerLease
+	stop      chan struct{}
+	once      sync.Once
 }
 
 func NewViewerManager(root string) *ViewerManager {
@@ -42,9 +44,24 @@ func NewViewerManager(root string) *ViewerManager {
 	}()
 	return m
 }
-func (m *ViewerManager) SetConfig(config Config) { m.buffers.SetConfig(config) }
-func (m *ViewerManager) Stats() Stats            { return m.buffers.Stats() }
+func (m *ViewerManager) SetConfig(config Config) {
+	m.lifecycle.Lock()
+	defer m.lifecycle.Unlock()
+	if m.closed {
+		return
+	}
+	if !config.Enabled {
+		_ = m.clear()
+	}
+	m.buffers.SetConfig(config)
+}
+func (m *ViewerManager) Stats() Stats { return m.buffers.Stats() }
 func (m *ViewerManager) Acquire(channel, url, owner string, config Config, client *http.Client, release func()) (Lease, error) {
+	m.lifecycle.Lock()
+	defer m.lifecycle.Unlock()
+	if m.closed {
+		return Lease{}, ErrViewer
+	}
 	if owner == "" || client == nil {
 		return Lease{}, ErrViewer
 	}
@@ -122,6 +139,11 @@ func (m *ViewerManager) expire() {
 	}
 }
 func (m *ViewerManager) Clear() error {
+	m.lifecycle.Lock()
+	defer m.lifecycle.Unlock()
+	return m.clear()
+}
+func (m *ViewerManager) clear() error {
 	m.mu.Lock()
 	all := m.leases
 	m.leases = map[string]viewerLease{}
@@ -134,4 +156,13 @@ func (m *ViewerManager) Clear() error {
 	}
 	return m.buffers.Clear()
 }
-func (m *ViewerManager) Close() { m.once.Do(func() { close(m.stop); m.Clear(); m.buffers.Close() }) }
+func (m *ViewerManager) Close() {
+	m.once.Do(func() {
+		m.lifecycle.Lock()
+		defer m.lifecycle.Unlock()
+		m.closed = true
+		close(m.stop)
+		_ = m.clear()
+		m.buffers.Close()
+	})
+}

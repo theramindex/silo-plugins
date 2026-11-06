@@ -109,6 +109,9 @@ type buffer struct {
 }
 
 type Manager struct {
+	// lifecycle serializes admission with root-wide cleanup; ingest never takes it.
+	lifecycle sync.Mutex
+	closed    bool
 	stop      chan struct{}
 	closeOnce sync.Once
 	root      string
@@ -141,18 +144,32 @@ func NewManager(root string) *Manager {
 }
 
 func (m *Manager) SetConfig(config Config) {
+	m.lifecycle.Lock()
+	defer m.lifecycle.Unlock()
+	if m.closed {
+		return
+	}
+	m.setConfig(config)
+}
+
+func (m *Manager) setConfig(config Config) {
 	config = config.normalized()
 	m.mu.Lock()
 	m.config = config
 	m.mu.Unlock()
 	if !config.Enabled {
-		_ = m.Clear()
+		_ = m.clear()
 		return
 	}
 	m.enforceBudget()
 }
 
 func (m *Manager) Acquire(channelID, streamURL string, config Config, clients ...*http.Client) (Lease, error) {
+	m.lifecycle.Lock()
+	defer m.lifecycle.Unlock()
+	if m.closed {
+		return Lease{}, fmt.Errorf("live rewind manager is closed")
+	}
 	config = config.normalized()
 	if !config.Enabled {
 		return Lease{}, fmt.Errorf("live rewind is disabled")
@@ -163,8 +180,12 @@ func (m *Manager) Acquire(channelID, streamURL string, config Config, clients ..
 	if err := m.ensureRoot(); err != nil {
 		return Lease{}, fmt.Errorf("prepare rewind cache: %w", err)
 	}
-	m.SetConfig(config)
+	m.setConfig(config)
 	bufferID := stableBufferID(channelID)
+	leaseID, err := randomID(18)
+	if err != nil {
+		return Lease{}, err
+	}
 
 	m.mu.Lock()
 	b := m.buffers[bufferID]
@@ -195,17 +216,12 @@ func (m *Manager) Acquire(channelID, streamURL string, config Config, clients ..
 		m.buffers[bufferID] = b
 		go b.run(ctx)
 	}
-	m.mu.Unlock()
-
-	leaseID, err := randomID(18)
-	if err != nil {
-		return Lease{}, err
-	}
 	b.mu.Lock()
 	b.window = config.Window
 	b.leases[leaseID] = time.Now().Add(config.LeaseTTL)
 	b.lastLease = time.Now()
 	b.mu.Unlock()
+	m.mu.Unlock()
 	return Lease{ID: leaseID, BufferID: bufferID}, nil
 }
 
@@ -337,6 +353,13 @@ func (m *Manager) Stats() Stats {
 }
 
 func (m *Manager) Clear() error {
+	m.lifecycle.Lock()
+	defer m.lifecycle.Unlock()
+	return m.clear()
+}
+
+// clear requires lifecycle, but releases mu before waiting for ingest shutdown.
+func (m *Manager) clear() error {
 	m.mu.Lock()
 	buffers := make([]*buffer, 0, len(m.buffers))
 	for _, b := range m.buffers {
@@ -706,5 +729,12 @@ func freeBytes(path string) int64 {
 }
 
 func (m *Manager) Close() {
-	m.closeOnce.Do(func() { close(m.stop); m.Clear(); m.client.CloseIdleConnections() })
+	m.closeOnce.Do(func() {
+		m.lifecycle.Lock()
+		defer m.lifecycle.Unlock()
+		m.closed = true
+		close(m.stop)
+		_ = m.clear()
+		m.client.CloseIdleConnections()
+	})
 }
