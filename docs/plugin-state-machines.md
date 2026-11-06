@@ -46,17 +46,17 @@ Dispatcharr and Local Artwork were preserved.
 
 P1 means persistent data loss or interruption of shared playback. P2 means
 incorrect acknowledged configuration, stale cross-generation results or an
-admin operation that can undo another operation. All issues remain open until
-the repairs are landed and the relevant dependencies are released.
+admin operation that can undo another operation. All six repair groups are
+landed and released; delivery evidence appears below.
 
 | Issue | Invalid state/transition observed before repair | Repair and regression owner | Status |
 |---|---|---|---|
-| [#2: XC unavailable-source retention](https://github.com/theramindex/silo-plugins/issues/2), P1 | Partial refresh succeeds; unavailable provider's channels survive but its durable guide, categories, movies and series disappear. Subsequent retries have no retained copy. | `xtream-codes/internal/app/sync.go`: `appendStaleXtreamSource` now queries the full snapshot and copies source-owned content, only for a matching configuration. `TestSyncXtreamKeepsFailedSourceStaleWhileRefreshingHealthySource` covers memory, SQLite, force refresh and disk reload. | Fixed locally; regression passed. |
-| [#1: Trakt alias consumption](https://github.com/theramindex/silo-plugins/issues/1), P1 | One remote history play satisfies two distinct local plays using different aliases; both return `NO_CHANGE`, silently dropping a play. | `trakt/provider/history.go`: every alias references the same consumable row. `TestApplyWatchedCountsPlaysAndIgnoresRepeatedEventIDs` covers movie/episode aliases, complete ID maps, duplicate event IDs and replay. | Fixed locally; regression passed. Trakt issues are disabled, so tracking lives here. |
-| [#3: Rewind clear/admission](https://github.com/theramindex/silo-plugins/issues/3), P1 | A newly admitted buffer reports `buffering` with two segments after an older clear deleted its files. A viewer can remain registered after its buffer is removed. | `pkg/livemedia/rewind/{manager,viewer}.go`: lifecycle locks span admission/clear; buffer and lease registration share the map lock. `TestManagerClearCannotDeleteConcurrentAdmission` and `TestViewerClearSerializesAdmissionAndReleasesReservations`. | Fixed locally in shared library; race regressions passed. Consumers still pin released library revisions. |
-| [#4: XC source mutation](https://github.com/theramindex/silo-plugins/issues/4), P2 | Two successful creates load the same registry; last whole-file save loses the other acknowledged source. Edit/delete interleavings use the same path. | `xtream-codes/internal/plugin/routes.go`: one mutation lock per owning route server spans load, legacy migration and save. `TestAdminSourceMutationsPreserveConcurrentCreates`. | Fixed locally; regression passed. Scope is one plugin process/owner, not independent processes sharing a file. |
-| [#5: XC obsolete guide work](https://github.com/theramindex/silo-plugins/issues/5), P2 | Targeted guide work reaches the target with a canceled caller, after close, or with old settings after a newer catalog operation. A running targeted operation is not canceled by config replacement. | Coordinator tracks targeted executions, rejects obsolete configuration, checks cancellation after serialization and drains on close. Service rejects mismatched snapshots and canceled publication. Fill checks settings between batches; router drains refreshes before closing stores. `TestTargetedGuideRejectsCanceledClosedAndObsoleteWork`, `TestTargetedGuideCanceledOnConfigurationReplacement`. | Fixed locally; focused race regressions passed. |
-| [#6: App Links overlapping mutations](https://github.com/theramindex/silo-plugins/issues/6), P2 | Save leaves Delete enabled; Delete leaves Save enabled. A delayed upsert can recreate a deleted link; completion can reset a newly selected draft. | `app-links/internal/plugin/pages.go`: both operations share admission guards; mutation locks fields, selection and New until completion; failure unlocks retry. `scripts/admin-state.test.mjs` executes the served script with deferred responses. | Fixed locally; both browser-script regressions passed; added to CI. |
+| [#2: XC unavailable-source retention](https://github.com/theramindex/silo-plugins/issues/2), P1 | Partial refresh succeeds; unavailable provider's channels survive but its durable guide, categories, movies and series disappear. Subsequent retries have no retained copy. | `xtream-codes/internal/app/sync.go`: `appendStaleXtreamSource` now queries the full snapshot and copies source-owned content, only for a matching configuration. `TestSyncXtreamKeepsFailedSourceStaleWhileRefreshingHealthySource` covers memory, SQLite, force refresh and disk reload. | Released in XC 0.4.3; regression passed. |
+| [#1: Trakt alias consumption](https://github.com/theramindex/silo-plugins/issues/1), P1 | One remote history play satisfies two distinct local plays using different aliases; both return `NO_CHANGE`, silently dropping a play. | `trakt/provider/history.go`: every alias references the same consumable row. `TestApplyWatchedCountsPlaysAndIgnoresRepeatedEventIDs` covers movie/episode aliases, complete ID maps, duplicate event IDs and replay. | Released in Trakt 0.3.3; regression passed. Trakt issues are disabled, so tracking lives here. |
+| [#3: Rewind clear/admission](https://github.com/theramindex/silo-plugins/issues/3), P1 | A newly admitted buffer reports `buffering` with two segments after an older clear deleted its files. A viewer can remain registered after its buffer is removed. | `pkg/livemedia/rewind/{manager,viewer}.go`: lifecycle locks span admission/clear; buffer and lease registration share the map lock. `TestManagerClearCannotDeleteConcurrentAdmission` and `TestViewerClearSerializesAdmissionAndReleasesReservations`. | Released in shared library 0.1.16, Dispatcharr 0.9.2, XC 0.4.3 and HDHomeRun 0.4.2. All consumer pins updated; race regressions passed. |
+| [#4: XC source mutation](https://github.com/theramindex/silo-plugins/issues/4), P2 | Two successful creates load the same registry; last whole-file save loses the other acknowledged source. Edit/delete interleavings use the same path. | `xtream-codes/internal/plugin/routes.go`: one mutation lock per owning route server spans load, legacy migration and save. `TestAdminSourceMutationsPreserveConcurrentCreates`. | Released in XC 0.4.3; regression passed. Scope is one plugin process/owner, not independent processes sharing a file. |
+| [#5: XC obsolete guide work](https://github.com/theramindex/silo-plugins/issues/5), P2 | Targeted guide work reaches the target with a canceled caller, after close, or with old settings after a newer catalog operation. A running targeted operation is not canceled by config replacement. | Coordinator tracks targeted executions, rejects obsolete configuration, checks cancellation after serialization and drains on close. Service rejects mismatched snapshots and canceled publication. Fill checks settings between batches; router drains refreshes before closing stores. `TestTargetedGuideRejectsCanceledClosedAndObsoleteWork`, `TestTargetedGuideCanceledOnConfigurationReplacement`. | Released in XC 0.4.3; focused race regressions passed. |
+| [#6: App Links overlapping mutations](https://github.com/theramindex/silo-plugins/issues/6), P2 | Save leaves Delete enabled; Delete leaves Save enabled. A delayed upsert can recreate a deleted link; completion can reset a newly selected draft. | `app-links/internal/plugin/pages.go`: both operations share admission guards; mutation locks fields, selection and New until completion; failure unlocks retry. `scripts/admin-state.test.mjs` executes the served script with deferred responses. | Released in App Links 0.1.5; both browser-script regressions passed in CI. |
 
 ### Reachability and pre-repair observations
 
@@ -262,8 +262,8 @@ last-known-good data. DeviceAuth is stripped from retained/public state.
 | Browser multiview | Fewer than four tiles | Add/remove tile, audio focus | Independent shared players, removal stops own session; one audio focus. |
 
 No separate HDHomeRun defect was confirmed in this audit. Its use of shared
-rewind is covered by #3 and requires a shared-library dependency update when
-that repair is released.
+rewind is covered by #3; HDHomeRun 0.4.2 now pins the repaired shared library
+0.1.16.
 
 ## Trakt
 
@@ -387,7 +387,7 @@ delivery. No separately confirmed Backup Requests bug was added to this ledger.
 | Sports event cache/flight, TV `sports_flight.go`, `sports_prepared.go` | Absent, fresh, expired, fetching, failed-with-stale | Expired request → one keyed shared fetch; waiter cancel → detach; success → cloned cached payload; error → old events + error. | Bounded fetch per key; live TTL ~30s, otherwise ~5m; canceled waiter cannot cancel every other waiter. |
 | Prepared sports payload | Not ready, rebuilding, complete, incomplete, stale/error | First request → background rebuild; guide fallback can publish early; complete replaces; incomplete/error retains prior complete payload; policy/guide revision invalidates. | Do not replace usable complete payload with partial matching; short retry after incomplete result. |
 | Sports event classification | Scheduled, live, final | Provider/time updates → scheduled/live/completed; impossible long-live timestamps → normalize away from live. | Live cannot remain indefinitely after >18h start or >2h-ended freshness bounds. |
-| Plugin release workflow | No releasable commit, queued, releasing, tagged, packaged, catalog updated, failed | Main push → serialized Release; feat→minor, fix/perf/revert→patch, breaking→major; chore/docs/test/refactor alone → no automatic release; manual workflow can force; failed step → Actions failure. | GitHub App identity; Conventional Commits determine release; every main push with releasable change ships; no push was performed for this audit. |
+| Plugin release workflow | No releasable commit, queued, releasing, tagged, packaged, catalog updated, failed | Main push → serialized Release; feat→minor, fix/perf/revert→patch, breaking→major; chore/docs/test/refactor alone → no automatic release; manual workflow can force; failed step → Actions failure. | GitHub App identity; Conventional Commits determine release; every main push with releasable change ships; this audit used the authorized release workflow. |
 
 ## Validation and delivery
 
@@ -412,14 +412,30 @@ Final validation:
 | Trakt `GOWORK=off go run . manifest` and `gofmt -l .` | Manifest succeeded; no formatting drift. |
 | Changed Go formatting and `git diff --check` in each edited repo | Clean. |
 
-Shared-library integration uses an external temporary Go workspace;
-no committed local `replace` directive is added. The plugins' pinned released
-dependencies remain unchanged, so the shared rewind repair needs a catalog
-library release and consumer version bumps before it affects released plugins.
+Early shared-library integration used an external temporary Go workspace.
+The released TV consumers now pin the published immutable `v0.1.16` module;
+release checks ran with `GOWORK=off` and no committed local `replace` directive.
+All five plugins' local release checks and tagged CI/publishing runs passed.
 
-Release follow-up: the user authorized patch releases for all affected plugins.
-Publication is in progress through the ramindex-ci GitHub App, starting with
-shared library v0.1.16, followed by consumer dependency updates. No live server
-deployment is included. Final versions and delivery evidence will be recorded
-here after publication. Keep transitions, regression names and issue status
-current whenever a linked repair changes.
+### Published repairs, 2026-11-06
+
+| Component | Release | Source commit | Tagged build / publication |
+|---|---|---|---|
+| Shared live media | [0.1.16](https://github.com/theramindex/silo-plugins/releases/tag/v0.1.16) | `1f453fc5cc7e710e19f06e76bda6dc71ddbfaea2` | Shared race suite and catalog CI passed. |
+| App Links | [0.1.5](https://github.com/theramindex/silo-plugin-app-links/releases/tag/v0.1.5) | `093edec5f3c57c60e84e2cf80242b63f0a4c091d` | [CI success](https://github.com/theramindex/silo-plugin-app-links/actions/runs/42267665359) |
+| Trakt | [0.3.3](https://github.com/theramindex/silo-plugin-watchprovider-trakt/releases/tag/v0.3.3) | `f68785670d5b6a70719eecb61b328e041d475749` | [Publish success](https://github.com/theramindex/silo-plugin-watchprovider-trakt/actions/runs/42267665018) |
+| Dispatcharr | [0.9.2](https://github.com/theramindex/silo-plugin-dispatcharr/releases/tag/v0.9.2) | `8a9f0e758a030cdc53dc1dfb7d8f0f70ae40fec3` | [CI success](https://github.com/theramindex/silo-plugin-dispatcharr/actions/runs/42268198759) |
+| HDHomeRun | [0.4.2](https://github.com/theramindex/silo-plugin-hdhomerun/releases/tag/v0.4.2) | `47495493d777b014491c528240f23a659a6e9b74` | [CI success](https://github.com/theramindex/silo-plugin-hdhomerun/actions/runs/42267934685) |
+| XC | [0.4.3](https://github.com/theramindex/silo-plugin-xtream-library/releases/tag/v0.4.3) | `bae13a35d5876c13cc44a969a80b7c896e5113eb` | [CI success](https://github.com/theramindex/silo-plugin-xtream-library/actions/runs/42268129617) |
+
+Downloaded all 15 plugin binaries (Linux amd64/arm64 and Darwin arm64 for each
+plugin), verified their SHA-256 values against their release checksums, and
+compared the catalog binary URLs/checksums and versions with those verified
+artifacts. Executed each released Darwin binary's `manifest` command and
+confirmed its bumped runtime version. The catalog's final plugin update is
+`ba527ec` (Dispatcharr 0.9.2); all five new plugin versions are listed and the
+catalog validator passes. Local Artwork was unchanged and remains 0.2.3.
+
+Commits, tags, releases and catalog publication used ramindex-ci. No live Silo
+server deployment was performed. Keep transitions, regression names and issue
+status current whenever a linked repair changes.
