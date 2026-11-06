@@ -23,7 +23,7 @@ const catalogDisplayNotes = new Map([
     "silo.ramindex.app-links",
     {
       displayName: "App Links",
-      description: "Configurable external app launcher with fullscreen iframe shells and an admin app link manager.",
+      description: "Launcher for external services, opened in a new tab or inside Silo, with an admin page for managing links.",
     },
   ],
   [
