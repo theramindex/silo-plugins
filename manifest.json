@@ -453,7 +453,7 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.romm",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -478,24 +478,41 @@
           }
         ],
         "category": "Games",
-        "checksum": "7a34bd148731e858277792c22d9aa1e9abdf53b9d217a6888aa58a84862b87c8"
+        "checksum": "0bdda1dbb6760b1b8afd7afa4f4aa043cdcc1e1dce91da613027c95587cc9590",
+        "presentation": {
+          "display_name": "RomM for Silo",
+          "summary": "Your RomM collection, with browser play and personal saves.",
+          "description_markdown": "Browse platforms, collections and games from RomM. Connect each Silo profile to its own RomM account, then play NES, SNES, GB, GBC and GBA games using locally bundled EmulatorJS. Requires the Ramindex Silo loopback relay. No ROMs or BIOS are included.",
+          "setup_markdown": "Set the RomM server URL in plugin settings, reachable from Silo and your browser. Open Games, choose Sign in to RomM, and approve Silo Games using your normal RomM or OIDC login. Token and pairing-code entry remain available for older servers. Keep the plugin data directory on persistent storage.",
+          "homepage_url": "https://github.com/theramindex/silo-plugin-romm",
+          "source_url": "https://github.com/theramindex/silo-plugin-romm",
+          "support_url": "https://github.com/theramindex/silo-plugin-romm/issues",
+          "changelog_url": "https://github.com/theramindex/silo-plugin-romm/releases",
+          "publisher_name": "Ramindex",
+          "publisher_url": "https://github.com/theramindex",
+          "license_spdx": "GPL-3.0-only"
+        },
+        "metadata": {
+          "display_name": "RomM for Silo",
+          "summary": "Your RomM collection, with browser play and personal saves."
+        }
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-romm",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.1.0/romm-0.1.0-darwin-arm64",
-          "checksum": "4178a4745e195de56800a90fc90adaa233b3bf010b1cf348cd29dac543568904"
+          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.2.0/romm-0.2.0-darwin-arm64",
+          "checksum": "576264ed555ae079867884e0d921d20891080185506b95d2f9182b60b21b289a"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.1.0/romm-0.1.0-linux-amd64",
-          "checksum": "7a34bd148731e858277792c22d9aa1e9abdf53b9d217a6888aa58a84862b87c8"
+          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.2.0/romm-0.2.0-linux-amd64",
+          "checksum": "0bdda1dbb6760b1b8afd7afa4f4aa043cdcc1e1dce91da613027c95587cc9590"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.1.0/romm-0.1.0-linux-arm64",
-          "checksum": "e2d1484eb58b5c1763ab07dd14548afcb2f4fa23e2acfa3f8244925d9c5ac948"
+          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.2.0/romm-0.2.0-linux-arm64",
+          "checksum": "47bde664722abdc9f08b843999033f92892853b731d5fdd553df0030e36c4c15"
         }
       },
-      "checksums_url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.1.0/checksums.txt"
+      "checksums_url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.2.0/checksums.txt"
     }
   ]
 }
