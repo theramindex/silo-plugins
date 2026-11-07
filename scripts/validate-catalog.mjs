@@ -6,6 +6,13 @@ const checksumsPath = new URL("../checksums.txt", import.meta.url);
 
 const catalogDisplayNotes = new Map([
   [
+    "silo.ramindex.romm",
+    {
+      displayName: "RomM for Silo",
+      description: "Browse RomM and play classic games with profile-specific account links and saved progress.",
+    },
+  ],
+  [
     "silo.ramindex.hdhomerun",
     {
       displayName: "HDHomeRun for Silo",
