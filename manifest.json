@@ -449,6 +449,53 @@
         }
       },
       "checksums_url": "https://github.com/theramindex/silo-plugin-hdhomerun/releases/download/v0.4.2/checksums.txt"
+    },
+    {
+      "manifest": {
+        "plugin_id": "silo.ramindex.romm",
+        "version": "0.1.0",
+        "silo_api_version": "v1",
+        "supported_platforms": [
+          {
+            "os": "darwin",
+            "arch": "arm64"
+          },
+          {
+            "os": "linux",
+            "arch": "amd64"
+          },
+          {
+            "os": "linux",
+            "arch": "arm64"
+          }
+        ],
+        "capabilities": [
+          {
+            "type": "http_routes.v1",
+            "id": "romm-routes",
+            "display_name": "RomM for Silo",
+            "description": "Browse RomM and play classic games with profile-specific account links and saved progress."
+          }
+        ],
+        "category": "Games",
+        "checksum": "7a34bd148731e858277792c22d9aa1e9abdf53b9d217a6888aa58a84862b87c8"
+      },
+      "repo_url": "https://github.com/theramindex/silo-plugin-romm",
+      "binaries": {
+        "darwin/arm64": {
+          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.1.0/romm-0.1.0-darwin-arm64",
+          "checksum": "4178a4745e195de56800a90fc90adaa233b3bf010b1cf348cd29dac543568904"
+        },
+        "linux/amd64": {
+          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.1.0/romm-0.1.0-linux-amd64",
+          "checksum": "7a34bd148731e858277792c22d9aa1e9abdf53b9d217a6888aa58a84862b87c8"
+        },
+        "linux/arm64": {
+          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.1.0/romm-0.1.0-linux-arm64",
+          "checksum": "e2d1484eb58b5c1763ab07dd14548afcb2f4fa23e2acfa3f8244925d9c5ac948"
+        }
+      },
+      "checksums_url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.1.0/checksums.txt"
     }
   ]
 }
