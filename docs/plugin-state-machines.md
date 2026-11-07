@@ -439,3 +439,69 @@ catalog validator passes. Local Artwork was unchanged and remains 0.2.3.
 Commits, tags, releases and catalog publication used ramindex-ci. No live Silo
 server deployment was performed. Keep transitions, regression names and issue
 status current whenever a linked repair changes.
+
+## Sports game companion follow-up (Dispatcharr and XC)
+
+Scope: the companion introduced for Dispatcharr 0.10.0 / XC 0.5.0. Both use
+`internal/plugin/ui/sports_companion.js`; the player owns its lifetime through
+`renderPlayerPage` / `stopPlayback`. Server box-score admission is covered by
+`TestSportsRouteReturnsOrientedPlayerBoxScore` in each plugin.
+
+The implicit state is a product of player lifetime, current game, request state,
+buffer maturity, and spoiler visibility. `tab` and `team` only select a view;
+they cannot change which snapshot is eligible for display.
+
+| State dimension | Values | Invariant |
+|---|---|---|
+| Lifetime | stopped / running / page hidden | Stopped has no timer, request owner, current game, buffered sample or companion DOM. Hidden pages skip new poll ticks. |
+| Game | unmatched / matched ID | Every buffered sample belongs to exactly one game; a game change discards all earlier samples and failure state. |
+| Request | idle / pending / failed | One admitted request per game/lifetime. Only the current generation, game and non-aborted request may publish. Requests carry the active account and profile via `coreFetch`. |
+| Delay | warming / mature | A sample becomes eligible only when local monotonic receipt time is at least the configured 0–300 seconds old. Upstream timestamps cannot bypass the delay. History is bounded to six minutes and 32 samples. |
+| Visibility | shown / spoilers hidden | Hidden scores suppress companion scores/statistics. Delayed related cards withhold current scores/status rather than bypassing the companion buffer. |
+
+| From | Event / guard | To and side effects |
+|---|---|---|
+| Any lifetime | `startSportsCompanion` | Stop previous owner, increment generation and clear buffers; start a one-second tick only for Sports-first playback. |
+| Running, unmatched | Confident channel/game match appears | Matched, idle; initialize new game state and request stats immediately. |
+| Running, matched | Game ID changes or disappears | Abort old request, clear history/error/pending state; request the new game if matched. |
+| Idle / failed | Visible page, matched game, at least 30 seconds since last attempt | Pending; authenticated request with a 12-second abort timeout. |
+| Pending | Current request returns usable scores/stats | Idle; append locally timestamped snapshot and clear failure state. |
+| Pending | Current request fails, times out or returns unavailable data | Failed; keep existing eligible samples and retry on the next eligible poll. |
+| Any request | Old generation/game or aborted success arrives | Discard; it cannot append data. Old request errors cannot mark a newer request stale. |
+| Warming | Receipt age reaches selected delay | Mature; show the newest eligible snapshot, never the current upstream scoreboard. |
+| Running | Page becomes hidden / visible | Suspend / resume poll admission on ticks. An already pending request may finish. |
+| Running | `stopPlayback`, restart, or tick detects navigation away | Stopped; abort immediately, clear interval/state and remove overlay/panel. A late response cannot restore them. |
+| Shown / hidden | Score preference toggled | Hidden / shown; snapshot eligibility remains unchanged. |
+
+### Confirmed defects found while completing the pending feature
+
+These were reachable in the uncommitted companion implementation and repaired
+before publication. One related fix group covers request ownership and teardown:
+
+| Priority | Reproduction and evidence | Repair / regression |
+|---|---|---|
+| High | Companion used bare `fetch`, omitting bearer/profile headers required by the authenticated sports route. The real auth-helper harness observed undefined Authorization/profile headers. | Use `coreFetch`; `companion polling carries the authenticated account and profile`. |
+| Medium | Stop playback while a stats request is pending. Teardown did not immediately invalidate the companion owner, leaving the interval and old response able to affect a restarted player. The regression observed an un-aborted signal. | Stop from the actual player teardown, invalidate generation, abort and clear DOM/state; `player teardown aborts polling immediately and a late result cannot publish`. |
+| Medium | Fail game A, then switch to game B or restart while B is pending. The error flag survived the game change, and old errors could mark a new owner stale. The regression observed stale=true after switching. | Reset failure state on game changes and require request identity for failure admission; `a new game clears failure state and ignores the previous generation`. |
+
+All three regressions failed before the repairs and pass afterward in both
+plugins. The browser component harness separately exercises tabs, team filters,
+score labels, delay warmup without fresh-score leaks, mobile layout and timer/DOM
+cleanup. CI runs that harness in Chromium. The Go release checks include race
+tests and the server route fixture; these are deterministic fixture checks,
+not a claim that every live ESPN league currently supplies box scores.
+
+### Companion publication verification
+
+| Plugin | Published version | Release commit | Tagged CI, binaries and catalog |
+|---|---|---|---|
+| Dispatcharr | [0.10.0](https://github.com/theramindex/silo-plugin-dispatcharr/releases/tag/v0.10.0) | `7a662b8362862e5d848b6ce9e10e54d5ef2b115b` | [CI passed](https://github.com/theramindex/silo-plugin-dispatcharr/actions/runs/42333117411); catalog commit `9c2c6d5`. |
+| XC | [0.5.0](https://github.com/theramindex/silo-plugin-xtream-library/releases/tag/v0.5.0) | `e2e0fdf44c09f4a11af5dbfb7b4cffd23a1d9d16` | [CI passed](https://github.com/theramindex/silo-plugin-xtream-library/actions/runs/42333094256); catalog commit `b27620f`. |
+
+Downloaded all six Linux amd64/arm64 and Darwin arm64 binaries and verified
+SHA-256 values against the release checksums and catalog entries, including
+exact download URLs. Both released Darwin binaries report their expected
+runtime version and plugin ID. Catalog validation passes. Local Artwork's
+superseded host-matching proposal was reconciled in `3d0e029` as a documentation
+change; its version remains 0.2.3. Dispatcharr's historical team-page audit is
+closed and archived in `8a93f5d` with links to the already-shipped repairs.
