@@ -453,7 +453,7 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.romm",
-        "version": "0.5.0",
+        "version": "0.5.1",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -478,7 +478,7 @@
           }
         ],
         "category": "Games",
-        "checksum": "2615d20a2fe154738091cf79b87050a2bc32838433cd6e2442c3730ab5785e2c",
+        "checksum": "92df7820936fbadfac28af506515436dd5d3bf448bef7ee4925e4b7cb741652b",
         "presentation": {
           "display_name": "RomM for Silo",
           "summary": "Your RomM collection, with browser play and personal saves.",
@@ -500,19 +500,19 @@
       "repo_url": "https://github.com/theramindex/silo-plugin-romm",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.5.0/romm-0.5.0-darwin-arm64",
-          "checksum": "b03949951b054fa2e67505875ca999a6055b9f40b6e4343796e6a8b147137036"
+          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.5.1/romm-0.5.1-darwin-arm64",
+          "checksum": "af1eaeb98bf3003ff27115076ebd7b2f8ebf69be3a760570bd277d01fc719de9"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.5.0/romm-0.5.0-linux-amd64",
-          "checksum": "2615d20a2fe154738091cf79b87050a2bc32838433cd6e2442c3730ab5785e2c"
+          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.5.1/romm-0.5.1-linux-amd64",
+          "checksum": "92df7820936fbadfac28af506515436dd5d3bf448bef7ee4925e4b7cb741652b"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.5.0/romm-0.5.0-linux-arm64",
-          "checksum": "a57b457d435c423b9f1a0055221108c3045b2eaa442fde1471367d5ac8343ad5"
+          "url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.5.1/romm-0.5.1-linux-arm64",
+          "checksum": "82cdbbb5c0efcb9eda84cd74d98c10f5b7b8993207982015de221628d0b4cc6a"
         }
       },
-      "checksums_url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.5.0/checksums.txt"
+      "checksums_url": "https://github.com/theramindex/silo-plugin-romm/releases/download/v0.5.1/checksums.txt"
     }
   ]
 }
