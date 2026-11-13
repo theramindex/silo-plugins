@@ -14,13 +14,33 @@ repository, depending on the plugin's release workflow.
 
 ## Included plugins
 
-The versions and capabilities below are taken from the current `manifest.json`.
+Current versions, platform coverage and checksums are in [manifest.json](manifest.json).
 
-| Plugin | Version | Category | Description | Platforms |
-| --- | ---: | --- | --- | --- |
-| [Dispatcharr for Silo](https://github.com/theramindex/silo-plugin-dispatcharr)  (`silo.ramindex.dispatcharr`) | `0.3.102` | Video / Live TV | Dispatcharr-backed Live TV app with guide, favorites, VOD, and series catalog routes. DVR/Recordings are available only in Dispatcharr Direct mode, not Xtream Codes or M3U/XMLTV mode. | macOS ARM64, Linux AMD64, Linux ARM64 |
-| [App Links](https://github.com/theramindex/silo-plugin-app-links)  (`silo.ramindex.app-links`) | `0.1.1` | Apps | Configurable external app launcher with fullscreen iframe shells and an admin app-link manager. | macOS ARM64, Linux AMD64, Linux ARM64 |
-| [XC for Silo](https://github.com/theramindex/silo-plugin-xtream-library)  (`silo.ramindex.xtream`) | `0.2.71` | Live TV | Xtream Codes-first Live TV app with My TV, ranked search, guide, VOD, series, provider catch-up, multiview, and optional Sports with provider REPLAY channels. It also supports M3U channel catalogs and guide sources. | macOS ARM64, Linux AMD64, Linux ARM64 |
+| Plugin | Description |
+| --- | --- |
+| [Dispatcharr for Silo](https://github.com/theramindex/silo-plugin-dispatcharr) | Live TV, guide, VOD and series; DVR in Direct mode. |
+| [XC for Silo](https://github.com/theramindex/silo-plugin-xtream-library) | Xtream and M3U/XMLTV Live TV, guide, VOD, series and catch-up. |
+| [HDHomeRun for Silo](https://github.com/theramindex/silo-plugin-hdhomerun) | HDHomeRun channels, guide, shared playback and Live Rewind. |
+| [App Links](https://github.com/theramindex/silo-plugin-app-links) | External app launcher. |
+| [Local Artwork](https://github.com/theramindex/silo-plugin-local-artwork) | Local artwork and metadata matching. |
+| [Trakt](https://github.com/theramindex/silo-plugin-watchprovider-trakt) | Trakt watch-state integration. |
+| [RomM for Silo](https://github.com/theramindex/silo-plugin-romm) | RomM game libraries and browser gameplay. |
+
+## Server compatibility and premiere reminders
+
+Dispatcharr, XC, and HDHomeRun remain usable on Silo servers without the Ramindex
+premiere extension. Their optional `watchPath` channel metadata is ignored by
+older `livetv/v1` consumers; normal channel browsing, guides, and playback do
+not depend on the new API. Existing SDK and installation requirements still apply.
+
+With a server advertising `/api/v2/premieres/capabilities`, the web calendar and
+series/episode pages can open profile-mapped channels during an expected original
+episode premiere. Configure **Calendar → Premiere reminders**. The server owns
+scheduling, profile preferences, and PostgreSQL storage. The adapters supply
+channel links. EPG matching and DVR are not required; metadata timing cannot
+guarantee what any regional feed is showing. Multiple feeds open a chooser.
+Native clients do not expose these new controls yet.
+
 
 ## Deprecated plugins
 
