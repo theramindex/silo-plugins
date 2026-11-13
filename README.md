@@ -1,6 +1,6 @@
-# The RamIndex Silo Plugin Catalog
+# The Ramedia Server Plugin Catalog
 
-This repository is a remote install catalog for Silo plugins. Add the raw
+This repository is the Ramedia Server catalog for Silo-compatible plugins. Add the raw
 manifest URL below to Silo to browse and install the published plugins:
 
 ```text
@@ -28,7 +28,7 @@ Current versions, platform coverage and checksums are in [manifest.json](manifes
 
 ## Server compatibility and premiere reminders
 
-Dispatcharr, XC, and HDHomeRun remain usable on Silo servers without the Ramindex
+Dispatcharr, XC, and HDHomeRun remain usable on Silo servers without the Ramedia Server
 premiere extension. Their optional `watchPath` channel metadata is ignored by
 older `livetv/v1` consumers; normal channel browsing, guides, and playback do
 not depend on the new API. Existing SDK and installation requirements still apply.
