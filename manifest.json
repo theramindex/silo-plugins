@@ -3,8 +3,8 @@
     {
       "manifest": {
         "plugin_id": "silo.ramindex.dispatcharr",
-        "version": "0.12.0",
-        "checksum": "cf6f75061d272c7abca27003e4c551aac5bc00f24ab8b3cca56b7813e479146b",
+        "version": "0.12.1",
+        "checksum": "01f8957eba5e3c5be34aca4064f2df7687e5cbdb3175333493223b5251c6f85a",
         "silo_api_version": "v1",
         "supported_platforms": [
           {
@@ -68,19 +68,19 @@
         }
       },
       "repo_url": "https://github.com/theramindex/silo-plugin-dispatcharr",
-      "checksums_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.12.0/checksums.txt",
+      "checksums_url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.12.1/checksums.txt",
       "binaries": {
         "darwin/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.12.0/dispatcharr-0.12.0-darwin-arm64",
-          "checksum": "0ed1a0c4c24ad2ac86c88c61dcb50de675f9ad26db547ecdd7a63c4f1b43ac80"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.12.1/dispatcharr-0.12.1-darwin-arm64",
+          "checksum": "c8a5ab265971598dc0c1155b26bb9f9075b4fc55528cd366e47cff3eab80d81a"
         },
         "linux/amd64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.12.0/dispatcharr-0.12.0-linux-amd64",
-          "checksum": "cf6f75061d272c7abca27003e4c551aac5bc00f24ab8b3cca56b7813e479146b"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.12.1/dispatcharr-0.12.1-linux-amd64",
+          "checksum": "01f8957eba5e3c5be34aca4064f2df7687e5cbdb3175333493223b5251c6f85a"
         },
         "linux/arm64": {
-          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.12.0/dispatcharr-0.12.0-linux-arm64",
-          "checksum": "04045cddfdb871b487e7bc6b094859c52c27429757a01993711d253628f00d9d"
+          "url": "https://github.com/theramindex/silo-plugin-dispatcharr/releases/download/v0.12.1/dispatcharr-0.12.1-linux-arm64",
+          "checksum": "0a9f214608e99140210f1a5d71aa72488676ed1fff363bcf30453e4b51312187"
         }
       }
     },
