@@ -69,3 +69,9 @@ node scripts/validate-catalog.mjs
 
 The published binaries currently cover macOS ARM64, Linux AMD64, and Linux
 ARM64 where supported by the individual plugin entry.
+
+## Web UI development
+
+Use [Modern Web Guidance](docs/modern-web-guidance.md) for plugin browser UI
+changes. The [2026-11-13 verification](docs/web-ui-verification-2026-11-13.md)
+records known findings, retained patterns and the limits of the local checks.
